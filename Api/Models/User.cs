@@ -2,4 +2,9 @@
 
 namespace Api.Models;
 
-public class User : IdentityUser { }
+public class User : IdentityUser
+{
+    #region Include
+    public ICollection<Order> Orders { get; set; } = [];
+    #endregion
+}
