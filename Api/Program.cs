@@ -26,7 +26,9 @@ builder.Services.AddDefaultIdentity<User>(options =>
     options.User.RequireUniqueEmail = false;
     options.SignIn.RequireConfirmedAccount = false;
 })
-.AddEntityFrameworkStores<Context>();
+.AddRoles<IdentityRole>()
+.AddEntityFrameworkStores<Context>()
+.AddDefaultTokenProviders();
 
 // Add services to the container.
 
