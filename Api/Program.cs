@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-/* Notes:
+/* Notes for Migration:
 # Database (Package Manager Consoler)
 - Install: dotnet tool install --global dotnet-ef
 - Add migration: Add-Migration InitialCreate
@@ -64,6 +64,9 @@ builder.Services.AddControllers()
     options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault;
 });
 
+// Health checks (standard built-in)
+builder.Services.AddHealthChecks();
+
 // Add Swagger services
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -79,7 +82,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Ensure authentication is used before authorization
+app.UseAuthentication();
 app.UseAuthorization();
+
+// Map health check endpoint at /status and allow anonymous access
+app.MapHealthChecks("/status").AllowAnonymous();
 
 app.MapControllers();
 
