@@ -14,6 +14,7 @@ public class Product
     #region Columns
     [Column(TypeName = "nvarchar(50)")]
     public string Name { get; set; } = "New Product";
+
     [Column]
     public int Store { get; set; } = 100;
     #endregion
@@ -23,6 +24,7 @@ public class Product
     #endregion
 
     #region Not Mapped
-    //public bool IsAvailable => Store - OrderProduct.Sum(x => x.Count) > 0;
+    public int OrderedCount => OrderProducts?.Aggregate(0, (acc, x) => x.Count + acc) ?? 0;
+    public bool IsAvailable => Store - OrderedCount > 0;
     #endregion
 }
