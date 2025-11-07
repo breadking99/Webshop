@@ -15,6 +15,6 @@ public class Order
     #region Include
     [ForeignKey(nameof(UserId))]
     public User? User { get; set; }
-    public ICollection<OrderProduct> OrderProducts { get; set; } = [];
+    public ICollection<OrderProduct>? OrderProducts { get; set; }
     #endregion
 }

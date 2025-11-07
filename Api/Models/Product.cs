@@ -19,7 +19,7 @@ public class Product
     #endregion
 
     #region Include
-    public ICollection<OrderProduct> OrderProducts { get; set; } = [];
+    public ICollection<OrderProduct>? OrderProducts { get; set; }
     #endregion
 
     #region Not Mapped
