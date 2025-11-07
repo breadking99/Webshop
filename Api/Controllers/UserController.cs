@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers;
 
 [Route("users")]
-[AllowAnonymous]
+[Authorize(Roles = "admin")]
 [ApiController]
 public class UserController(UserManager<User> userManager) : ControllerBase
 {

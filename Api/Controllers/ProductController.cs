@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Api.Controllers;
 
 [Route("products")]
-[AllowAnonymous]
+[Authorize]
 [ApiController]
 public class ProductController(Context context) : ControllerBase
 {
@@ -39,6 +39,7 @@ public class ProductController(Context context) : ControllerBase
         return Ok(product);
     }
 
+    [Authorize(Roles = "admin")]
     [HttpPost]
     public async Task<IActionResult> PostProductAsync(
         [FromBody] Product product)
@@ -54,6 +55,7 @@ public class ProductController(Context context) : ControllerBase
         return Ok();
     }
 
+    [Authorize(Roles = "admin")]
     [HttpPut("{id}")]
     public async Task<IActionResult> PutProductByIdAsync(
         [FromRoute] int id,

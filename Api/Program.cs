@@ -1,7 +1,10 @@
 ﻿using Api;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 using Api.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 /* Notes:
 # Database (Package Manager Consoler)
@@ -30,8 +33,31 @@ builder.Services.AddDefaultIdentity<User>(options =>
 .AddEntityFrameworkStores<Context>()
 .AddDefaultTokenProviders();
 
-// Add services to the container.
+// Authentication and Authorization:
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 
+}).AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Authentication:Issuer"],
+        ValidAudience = builder.Configuration["Authentication:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Authentication:Key"]!))
+    };
+})
+.AddCookie();
+
+// Add services to the container.
 builder.Services.AddControllers()
 .AddJsonOptions(options =>
 {
