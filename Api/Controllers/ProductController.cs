@@ -14,15 +14,22 @@ public class ProductController(Context context) : ControllerBase
     #region Fields
     private readonly Context context = context;
     #endregion
+
     #region Methods
     [HttpGet]
     public async Task<ActionResult<List<Product>>> GetProductsAsync(
         [FromQuery] Pager? pager)
     {
-        List<Product> products = await context.Products
-            .Skip(pager is null ? 0 : (pager.Number - 1) * pager.Size)
-            .Take(pager is null ? 1000 : pager.Size)
-            .ToListAsync();
+        IQueryable<Product> queryable = context.Products;
+
+        if (pager != null && pager.Number > 0 && pager.Size > 0)
+        {
+            queryable = queryable
+                .Skip((pager.Number - 1) * pager.Size)
+                .Take(pager.Size);
+        }
+
+        List<Product> products = await queryable.ToListAsync();
 
         return Ok(products);
     }

@@ -2,6 +2,6 @@
 
 public class Pager
 {
-    public int Number { get; set; } = 1;
-    public int Size { get; set; } = 10;
+    public int Number { get; set; }
+    public int Size { get; set; }
 }
