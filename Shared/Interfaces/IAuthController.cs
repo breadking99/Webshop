@@ -3,6 +3,7 @@ using Shared.Requests;
 
 namespace Shared.Interfaces;
 
+//! auth
 public interface IAuthController
 {
     //! login

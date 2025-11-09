@@ -3,6 +3,7 @@ using Shared.Responses;
 
 namespace Shared.Interfaces;
 
+//! auth
 public interface IAuthService
 {
     //! login
