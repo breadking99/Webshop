@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Shared.Requests;
 
-namespace Api.Interfaces;
+namespace Shared.Interfaces;
 
 public interface IAuthController
 {
@@ -9,5 +9,4 @@ public interface IAuthController
     Task<ActionResult<string>> PostLoginAsync(LoginRequest request);
     //! register
     Task<ActionResult<string>> PostRegisterAsync(RegisterRequest request);
-
 }
