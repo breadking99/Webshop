@@ -5,6 +5,8 @@ VisualStudioVersion = 18.0.11116.177 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "Api\Api.csproj", "{D7BF2D97-E84E-4970-861A-4615685BF546}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Blazor", "Web.Blazor\Web.Blazor.csproj", "{8299F9D0-227E-4B7C-A5F1-B54A9AADB905}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{D7BF2D97-E84E-4970-861A-4615685BF546}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D7BF2D97-E84E-4970-861A-4615685BF546}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D7BF2D97-E84E-4970-861A-4615685BF546}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8299F9D0-227E-4B7C-A5F1-B54A9AADB905}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8299F9D0-227E-4B7C-A5F1-B54A9AADB905}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8299F9D0-227E-4B7C-A5F1-B54A9AADB905}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8299F9D0-227E-4B7C-A5F1-B54A9AADB905}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
