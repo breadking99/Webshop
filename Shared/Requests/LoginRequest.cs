@@ -1,4 +1,4 @@
-﻿namespace Api.Contracts;
+﻿namespace Shared.Requests;
 
 public class LoginRequest
 {

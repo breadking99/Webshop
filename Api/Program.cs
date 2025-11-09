@@ -1,9 +1,9 @@
 ﻿using Api;
-using Api.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Shared.Models;
 using System.Text;
 
 /* Notes for Migration:

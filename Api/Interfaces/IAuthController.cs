@@ -1,5 +1,5 @@
-﻿using Api.Contracts;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Shared.Requests;
 
 namespace Api.Interfaces;
 

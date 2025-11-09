@@ -1,8 +1,8 @@
-﻿using Api.Contracts;
-using Api.Models;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Shared.Models;
+using Shared.Queries;
 
 namespace Api.Controllers;
 
@@ -18,7 +18,7 @@ public class ProductController(Context context) : ControllerBase
     #region Methods
     [HttpGet]
     public async Task<ActionResult<List<Product>>> GetProductsAsync(
-        [FromQuery] Pager? pager)
+        [FromQuery] PagerQuery? pager)
     {
         IQueryable<Product> queryable = context.Products;
 
