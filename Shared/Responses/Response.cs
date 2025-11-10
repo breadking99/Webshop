@@ -7,9 +7,10 @@ namespace Shared.Responses;
 public class Response : IResponse
 {
     public Response() { }
-    public Response(EResponseStatus status, string? message = null)
+    public Response(EResponseStatus status, string? message = null) : this(status.ToStatusCode(), message) { }
+    public Response(int statusCode, string? message = null)
     {
-        Status = status;
+        StatusCode = statusCode;
         Message = message;
     }
 
@@ -26,11 +27,13 @@ public class Response : IResponse
 public class Response<TValue> : Response, IResponse<TValue>
 {
     public Response() { }
+    public Response(int statusCode, string? message = null) : base(statusCode, message) { }
     public Response(EResponseStatus status, string? message = null) : base(status, message) { }
+    public Response(Response response) : base(response.StatusCode, response.Message) { }
     public Response(TValue value)
     {
         Value = value;
-        Status = EResponseStatus.Success;
+        Status = EResponseStatus.Ok;
     }
 
     public TValue? Value { get; set; }

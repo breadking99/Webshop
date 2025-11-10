@@ -2,6 +2,7 @@
 
 namespace Shared.Interfaces;
 
+
 public interface IResponse
 {
     int StatusCode { get; set; }
@@ -14,3 +15,6 @@ public interface IResponse<TValue> : IResponse
 {
     TValue? Value { get; set; }
 }
+
+public interface ISimpleResponse { }
+public interface IGenericResponse { }

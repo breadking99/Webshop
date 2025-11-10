@@ -23,7 +23,7 @@ public class AuthController(UserManager<User> userManager, IConfiguration config
     #region Methods
     [HttpPost("login")]
     public async Task<ActionResult<string>> PostLoginAsync(
-        [FromBody] LoginRequest request)
+        [FromQuery] LoginRequest request)
     {
         string? token = await LoginAsync(request);
 
