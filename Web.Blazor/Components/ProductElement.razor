@@ -1,0 +1,12 @@
+﻿<div class="form-shell product-shell">
+    <form class="form-card product-card" Model="Contract">
+        <h2 class="form-title">@Product.Name</h2>
+        <p>In stock: @Product.AvailableCount</p>
+        @if (true)
+        {
+            <div class="form-actions two-column">
+                <NavButton Title="View Details" NavigateTo="@NavigateTo" />
+            </div>
+        }
+    </form>
+</div>
