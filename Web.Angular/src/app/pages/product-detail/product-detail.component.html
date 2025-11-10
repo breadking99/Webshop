@@ -14,7 +14,7 @@
         [value]="quantity"
         min="1"
         [max]="maxSelectable"
-        (input)="onQuantityChange(($event.target as HTMLInputElement).value)"
+  (input)="onQuantityChange($any($event.target).value)"
       />
     </label>
 

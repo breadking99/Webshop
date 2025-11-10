@@ -19,7 +19,7 @@
               type="number"
               min="1"
               [value]="item.count"
-              (change)="updateCount(item.productId, ($event.target as HTMLInputElement).value)"
+              (change)="updateCount(item.productId, $any($event.target).value)"
             />
           </td>
           <td class="text-end">{{ item.product?.store ?? '—' }}</td>

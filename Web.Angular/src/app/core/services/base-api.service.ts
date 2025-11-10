@@ -11,11 +11,11 @@ export abstract class BaseApiService {
 
   protected toResponse<T>(source: Observable<HttpResponse<T>>): Observable<Response<T>> {
     return source.pipe(
-      map(({ status, body }) => ({
+      map(({ status, body }: HttpResponse<T>) => ({
         statusCode: status,
         value: body ?? undefined
       })),
-      catchError(error => of(this.handleError<T>(error)))
+      catchError((error: unknown) => of(this.handleError<T>(error)))
     );
   }
 
