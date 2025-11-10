@@ -10,7 +10,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 // Inject HttpClients:
 Uri baseAddress = new(builder.Configuration.GetValue<string>("BaseAddress")!);
-TimeSpan timeout = TimeSpan.FromSeconds(30);
+TimeSpan timeout = TimeSpan.FromSeconds(300);
 builder.Services.AddScoped(sp => new HttpClient
 {
     BaseAddress = baseAddress,

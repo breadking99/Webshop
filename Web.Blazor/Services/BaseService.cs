@@ -77,10 +77,7 @@ public class BaseService
 
     // TRequest & TValue
     protected async Task<Response<TValue>> PostAsync<TRequest, TValue>(string uri, TRequest? body) where TRequest : class
-    {
-        Response<TValue> response = await DoRequest<TValue>(() => httpClient.PostAsync(uri, GetContent(body)));
-        return response;
-    }
+        => await DoRequest<TValue>(() => httpClient.PostAsync(uri, GetContent(body)));
     protected async Task<Response<TValue>> PostAsync<TRequest, TValue>(TRequest? body = null, object[]? parameters = null) where TRequest : class
         => await PostAsync<TRequest, TValue>(GetUri<object>(parameters, null), body);
     protected async Task<Response<TValue>> PostAsync<TRequest, TValue, TQuery>(TRequest? body = null, object[]? parameters = null, TQuery? query = null)
@@ -177,7 +174,7 @@ public class BaseService
 
             return await GetContent<TValue>(result);
         }
-        catch (Exception ex)
+        catch
         {
             return new(EResponseStatus.TimeOut);
         }
@@ -201,15 +198,19 @@ public class BaseService
     {
         if (result.IsSuccessStatusCode)
         {
+            Response<TValue>? responseTypes = await HandleDifferentTypes<TValue>(result);
+            if (responseTypes != null) return responseTypes;
+
             string json = await result.Content.ReadAsStringAsync();
             TValue? value = JsonConvert.DeserializeObject<TValue>(json);
             if (value == null) return new(EResponseStatus.DeserializeError);
-            return new() { Status = EResponseStatus.Ok, Value = value };
+
+            return new(value);
         }
 
-        Response response = await GetContent(result);
+        Response responseMessage = await GetContent(result);
 
-        return new(response);
+        return new(responseMessage);
     }
 
     private static async Task<Response> GetContent(HttpResponseMessage result)
@@ -226,6 +227,19 @@ public class BaseService
         string json = JsonConvert.SerializeObject(request, Formatting.Indented);
 
         return new StringContent(json, Encoding.UTF8, "application/json");
+    }
+
+    private static async Task<Response<TValue>?> HandleDifferentTypes<TValue>(HttpResponseMessage result)
+    {
+        if (typeof(TValue) == typeof(string))
+        {
+            string str = await result.Content.ReadAsStringAsync();
+            object? value = str as object;
+
+            return new((TValue)value!);
+        }
+
+        return null;
     }
     #endregion
 }
