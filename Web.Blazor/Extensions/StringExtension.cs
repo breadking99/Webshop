@@ -11,7 +11,7 @@ public static class StringExtension
     public static void AppendJoin<T>(this StringBuilder sb, char separator, IEnumerable<T> values) =>
         AppendJoin(sb, separator.ToString(), values);
 
-    //!? AI generated:
+    //!? AI Generated:
     // Convert a POCO to query string: PropertyName=Value&PropertyName2=Value2
     // - Skips null values
     // - Collections (except string) are joined with comma
