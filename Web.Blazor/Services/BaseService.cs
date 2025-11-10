@@ -21,6 +21,7 @@ public class BaseService
     #endregion
 
     #region Properties
+    public static bool IsLoggedIn => !string.IsNullOrEmpty(Token);
     protected StringBuilder ServiceAddress => GetServiceAddress();
     protected static string Token { get; set; } = string.Empty;
     #endregion
