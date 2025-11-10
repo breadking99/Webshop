@@ -11,17 +11,17 @@ public class AuthService(HttpClient httpClient) : BaseService(httpClient), IAuth
     protected override StringBuilder GetServiceAddress(params object[] parameters)
         => base.GetServiceAddress("auth");
 
-    public async Task<Response<AuthData>> PostLoginAsync(LoginRequest request)
+    public async Task<Response<AuthData>> PostLoginAsync(AuthRequest request)
     {
-        var response = await PostAsync<LoginRequest, AuthData>(request, ["login"]);
+        var response = await PostAsync<AuthRequest, AuthData>(request, ["login"]);
         DataManager.AuthData = AuthData.FromResult(response, request);
 
         return response;
     }
 
-    public async Task<Response<AuthData>> PostRegisterAsync(RegisterRequest request)
+    public async Task<Response<AuthData>> PostRegisterAsync(AuthRequest request)
     {
-        var response = await PostAsync<RegisterRequest, AuthData>(request, ["register"]);
+        var response = await PostAsync<AuthRequest, AuthData>(request, ["register"]);
         DataManager.AuthData = AuthData.FromResult(response, request);
 
         return response;

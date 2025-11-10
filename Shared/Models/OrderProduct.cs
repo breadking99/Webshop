@@ -17,7 +17,6 @@ public class OrderProduct
     public int Count { get; set; }
     #endregion
 
-
     #region Include
     [ForeignKey(nameof(OrderId))]
     public Order? Order { get; set; }

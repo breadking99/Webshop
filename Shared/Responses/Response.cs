@@ -4,7 +4,7 @@ using Shared.Interfaces;
 
 namespace Shared.Responses;
 
-public class Response : IResponse
+public class Response
 {
     #region Contructors
     public Response() { }
@@ -45,7 +45,7 @@ public class Response : IResponse
     #endregion
 }
 
-public class Response<TValue> : Response, IResponse<TValue>
+public class Response<TValue> : Response
 {
     #region Contructors
     public Response() { }

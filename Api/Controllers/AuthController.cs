@@ -25,7 +25,7 @@ public class AuthController(UserManager<User> userManager, IConfiguration config
     #region Methods
     [HttpPost("login")]
     public async Task<ActionResult<AuthData>> PostLoginAsync(
-        [FromBody] LoginRequest request)
+        [FromBody] AuthRequest request)
     {
         AuthData response = await LoginAsync(request);
 
@@ -41,7 +41,7 @@ public class AuthController(UserManager<User> userManager, IConfiguration config
 
     [HttpPost("register")]
     public async Task<ActionResult<AuthData>> PostRegisterAsync(
-        [FromBody] RegisterRequest request)
+        [FromBody] AuthRequest request)
     {
         if (request.Password != request.ConfirmPassword)
             return BadRequest("Password and Confirm Password do not match.");
@@ -58,7 +58,7 @@ public class AuthController(UserManager<User> userManager, IConfiguration config
         return Unauthorized("Unsuccessful registration attempt.");
     }
 
-    private async Task<AuthData> RegisterAsync(RegisterRequest request)
+    private async Task<AuthData> RegisterAsync(AuthRequest request)
     {
         // Is email exist:
         User? user = await userManager.FindByEmailAsync(request.Email);
@@ -80,7 +80,7 @@ public class AuthController(UserManager<User> userManager, IConfiguration config
         else return new();
     }
 
-    private async Task<AuthData> LoginAsync(LoginRequest request)
+    private async Task<AuthData> LoginAsync(AuthRequest request)
     {
         // Validate user credentials:
         User? user = await ValidateUserCredentialsAsync(request);
@@ -99,7 +99,7 @@ public class AuthController(UserManager<User> userManager, IConfiguration config
         return new(user.UserName!, token, validTo);
     }
 
-    private async Task<User?> ValidateUserCredentialsAsync(LoginRequest request)
+    private async Task<User?> ValidateUserCredentialsAsync(AuthRequest request)
     {
         // Check if user exists:
         User? user = await userManager.FindByEmailAsync(request.Email);

@@ -8,7 +8,7 @@ namespace Shared.Interfaces;
 public interface IAuthController
 {
     //! login
-    Task<ActionResult<AuthData>> PostLoginAsync(LoginRequest request);
+    Task<ActionResult<AuthData>> PostLoginAsync(AuthRequest request);
     //! register
-    Task<ActionResult<AuthData>> PostRegisterAsync(RegisterRequest request);
+    Task<ActionResult<AuthData>> PostRegisterAsync(AuthRequest request);
 }

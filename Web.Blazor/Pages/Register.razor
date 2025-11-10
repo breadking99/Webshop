@@ -5,7 +5,7 @@
 
 <PageTitle>Register</PageTitle>
 
-<BaseForm TRequest="RegisterRequest"
+<BaseForm TRequest="AuthRequest"
           TResponse="Response<AuthData>"
           Title="Register"
           NavTitle="Login"
@@ -30,7 +30,7 @@
 </BaseForm>
 
 @code {
-    private readonly RegisterRequest RequestModel = new();
+    private readonly AuthRequest RequestModel = new();
     private readonly Response<AuthData> ResponseModel = new();
 
     protected override void OnInitialized()
