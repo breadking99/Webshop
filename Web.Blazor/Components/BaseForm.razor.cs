@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Shared.Enums;
 using Shared.Responses;
-using System.Diagnostics.Contracts;
 
 namespace Web.Blazor.Components;
 
@@ -10,6 +10,8 @@ public partial class BaseForm<TRequest, TResponse>
     where TResponse : Response
 {
     [Parameter] public string Title { get; set; } = string.Empty;
+    [Parameter] public string SubmitTitle { get; set; } = "Submit";
+    [Parameter] public string LoadingTitle { get; set; } = "Submitting...";
     [Parameter] public string NavTitle { get; set; } = string.Empty;
     [Parameter] public string? ButtonNavigateTo { get; set; }
     [Parameter] public string? SubmitNavigateTo { get; set; }
@@ -18,11 +20,6 @@ public partial class BaseForm<TRequest, TResponse>
     [Parameter] public RenderFragment<TRequest>? Content { get; set; }
     [Inject] private NavigationManager Navigation { get; init; } = null!;
     private bool IsLoading => Response?.IsLoading ?? false;
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-    }
 
     private async Task OnSubmitClickedAsync()
     {
@@ -35,6 +32,9 @@ public partial class BaseForm<TRequest, TResponse>
                 Navigation.NavigateTo(SubmitNavigateTo);
             }
         }
-        catch { }
+        catch
+        {
+            Response.Status = EResponseStatus.UnknownError;
+        }
     }
 }

@@ -60,7 +60,7 @@ else if (ResponseModel.IsSuccess)
             return;
         }
 
-        ResponseModel.Update = StateHasChanged;
+        //ResponseModel.Update = StateHasChanged;
         ResponseModel.Request = () => OrderService.GetMyOrdersAsync();
     }
 
