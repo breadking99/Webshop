@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Shared.Enums;
 using Shared.Responses;
+using System;
 using System.Net.Http.Headers;
 using System.Text;
 using Web.Blazor.Extensions;
@@ -20,11 +22,11 @@ public class BaseService
 
     #region Properties
     protected StringBuilder ServiceAddress => GetServiceAddress();
+    protected static string Token { get; set; } = string.Empty;
     #endregion
 
     #region Fields
     private readonly HttpClient httpClient;
-    private static string token = string.Empty;
     #endregion
 
     //? Later add Request Settings
@@ -75,7 +77,10 @@ public class BaseService
 
     // TRequest & TValue
     protected async Task<Response<TValue>> PostAsync<TRequest, TValue>(string uri, TRequest? body) where TRequest : class
-        => await DoRequest<TValue>(() => httpClient.PostAsync(uri, GetContent(body)));
+    {
+        Response<TValue> response = await DoRequest<TValue>(() => httpClient.PostAsync(uri, GetContent(body)));
+        return response;
+    }
     protected async Task<Response<TValue>> PostAsync<TRequest, TValue>(TRequest? body = null, object[]? parameters = null) where TRequest : class
         => await PostAsync<TRequest, TValue>(GetUri<object>(parameters, null), body);
     protected async Task<Response<TValue>> PostAsync<TRequest, TValue, TQuery>(TRequest? body = null, object[]? parameters = null, TQuery? query = null)
@@ -142,9 +147,17 @@ public class BaseService
     protected StringBuilder GetRequestAddress(params object[] parameters) => ServiceAddress.AppendJoin('/', parameters);
     protected string GetUri<TQuery>(object[]? parameters = null, TQuery? query = null) where TQuery : class
     {
-        StringBuilder sb = (parameters == null) ? ServiceAddress : GetRequestAddress(parameters);
+        StringBuilder sb;
+
+        if (parameters == null || parameters.Length == 0) sb = ServiceAddress;
+        else sb = ServiceAddress
+            .Append('/')
+            .AppendJoin('/', parameters);
+
         sb.AddQuery(query);
-        return sb.ToString();
+        string uri = sb.ToString();
+
+        return uri;
     }
     #endregion
 
@@ -152,7 +165,7 @@ public class BaseService
     private void InitAuthHeader()
     {
         string scheme = "bearer";
-        AuthenticationHeaderValue authHeader = new(scheme, token);
+        AuthenticationHeaderValue authHeader = new(scheme, Token);
         httpClient.DefaultRequestHeaders.Authorization = authHeader;
     }
 
@@ -161,9 +174,10 @@ public class BaseService
         try
         {
             HttpResponseMessage result = await request();
+
             return await GetContent<TValue>(result);
         }
-        catch
+        catch (Exception ex)
         {
             return new(EResponseStatus.TimeOut);
         }
@@ -174,6 +188,7 @@ public class BaseService
         try
         {
             HttpResponseMessage result = await request();
+
             return await GetContent(result);
         }
         catch
@@ -191,7 +206,9 @@ public class BaseService
             if (value == null) return new(EResponseStatus.DeserializeError);
             return new() { Status = EResponseStatus.Ok, Value = value };
         }
+
         Response response = await GetContent(result);
+
         return new(response);
     }
 
@@ -199,6 +216,7 @@ public class BaseService
     {
         int statusCode = (int)result.StatusCode;
         string message = await result.Content.ReadAsStringAsync();
+
         return new(statusCode, message);
     }
 
@@ -206,6 +224,7 @@ public class BaseService
     {
         if (request == null) return null;
         string json = JsonConvert.SerializeObject(request, Formatting.Indented);
+
         return new StringContent(json, Encoding.UTF8, "application/json");
     }
     #endregion

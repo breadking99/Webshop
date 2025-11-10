@@ -1,0 +1,25 @@
+﻿@typeparam TRequest
+@typeparam TResponse
+
+<div class="form-shell">
+    <form class="form-card" Model="Contract" @onsubmit="OnSubmitClickedAsync">
+        <h2 class="form-title">@Title</h2>
+        @if (Content is not null)
+        {
+            @Content(Request)
+        }
+        @if (true)
+        {
+            <div class="form-actions two-column">
+                <button class="form-button" type="submit" disabled="@IsLoading">
+                    @(IsLoading ? "Submitting..." : "Submit")
+                </button>
+                @if (ButtonNavigateTo is not null)
+                {
+                    <NavButton Title="@NavTitle" NavigateTo="@ButtonNavigateTo" />
+                }
+            </div>
+        }
+        <ResponseMessage Response="@Response" />
+    </form>
+</div>

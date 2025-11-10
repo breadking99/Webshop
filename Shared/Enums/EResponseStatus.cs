@@ -3,9 +3,11 @@
 public enum EResponseStatus
 {
     // Non-HTTP sentinel values
-    Unknown = 0,
-    Offline = 1,
-    DeserializeError = 2,
+    Default = 0,
+    Loading = 1,
+    Offline = 2,
+    DeserializeError = 3,
+    UnknownError = 4,
 
     // HTTP-aligned values
     Ok = 200,

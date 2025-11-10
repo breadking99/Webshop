@@ -22,6 +22,15 @@ builder.Services.AddDbContext<Context>(options =>
     options.UseSqlite(connectionString);
 });
 
+// Remove cors policy:
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AnyCorsPolicy", builder =>
+        builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader());
+});
+
 // Add user identity:
 builder.Services.AddDefaultIdentity<User>(options =>
 {
@@ -71,6 +80,7 @@ builder.Services.AddHealthChecks();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -78,6 +88,12 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+// Use any CORS:
+if (true)
+{
+    app.UseCors("AnyCorsPolicy");
 }
 
 app.UseHttpsRedirection();

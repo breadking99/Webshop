@@ -11,8 +11,18 @@ public class AuthService(HttpClient httpClient) : BaseService(httpClient), IAuth
         => base.GetServiceAddress("auth");
 
     public async Task<Response<string>> PostLoginAsync(LoginRequest request)
-        => await PostAsync<LoginRequest, string>(request, ["login"]);
+    {
+        var response = await PostAsync<LoginRequest, string>(request, ["login"]);
+        Token = response.Value ?? string.Empty;
+
+        return response;
+    }
 
     public async Task<Response<string>> PostRegisterAsync(RegisterRequest request)
-        => await PostAsync<RegisterRequest, string>(request, ["register"]);
+    {
+        var response = await PostAsync<RegisterRequest, string>(request, ["register"]);
+        Token = response.Value ?? string.Empty;
+
+        return response;
+    }
 }

@@ -1,7 +1,37 @@
 ﻿@page "/"
 
+@inject IAuthService Service
+
 <PageTitle>Home</PageTitle>
 
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
+
+<BaseForm TRequest="LoginRequest"
+          TResponse="Response<string>"
+		  Request="@Request"
+          Response="@Response"
+          Title="Login">
+    <Content Context="Request">
+        <Entry @bind-Value="Request.Email"
+               Label="Email"
+               Type="email"
+               AutoComplete="email" />
+        <Entry @bind-Value="Request.Password"
+               Label="Password"
+               Type="password"
+               AutoComplete="current-password" />
+    </Content>
+</BaseForm>
+
+@code {
+    private LoginRequest Request { get; set; } = new LoginRequest();
+    private Response<string> Response { get; set; } = new Response<string>();
+
+    protected override void OnInitialized()
+    {
+		base.OnInitialized();
+		Response.Request = () => Service.PostLoginAsync(Request);
+    }
+}
