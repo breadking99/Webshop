@@ -22,11 +22,7 @@ public class BaseService
 
     #region Properties
     protected StringBuilder ServiceAddress => GetServiceAddress();
-    protected static string Token
-    {
-        get => DataManager.Token;
-        set => DataManager.Token = value;
-    }
+    protected static string Token => DataManager.T
     #endregion
 
     #region Fields
