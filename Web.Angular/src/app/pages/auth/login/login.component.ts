@@ -7,6 +7,7 @@ import { DataStoreService } from '../../../core/state/data-store.service';
 import { createLoadingResponse, Response } from '../../../shared/responses/response';
 import { isSuccessStatus } from '../../../shared/enums/response-status';
 import { LoginRequest } from '../../../shared/requests/login-request';
+import { AuthData, hasValidToken } from '../../../shared/responses/auth-data';
 
 @Component({
   selector: 'app-login',
@@ -21,7 +22,7 @@ export class LoginComponent implements OnDestroy {
     password: FormControl<string>;
   }>;
 
-  response: Response<string> | null = null;
+  response: Response<AuthData> | null = null;
   isSubmitting = false;
 
   private readonly destroy$ = new Subject<void>();
@@ -50,7 +51,7 @@ export class LoginComponent implements OnDestroy {
 
     const request: LoginRequest = this.form.getRawValue();
 
-    this.response = createLoadingResponse<string>();
+  this.response = createLoadingResponse<AuthData>();
     this.isSubmitting = true;
 
     this.authService.login(request).pipe(
@@ -60,7 +61,7 @@ export class LoginComponent implements OnDestroy {
       })
     ).subscribe(response => {
       this.response = response;
-      if (isSuccessStatus(response.statusCode)) {
+      if (isSuccessStatus(response.statusCode) && response.value && hasValidToken(response.value)) {
         this.router.navigate(['/']);
       }
     });

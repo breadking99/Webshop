@@ -3,30 +3,41 @@ import { BehaviorSubject, map } from 'rxjs';
 import { Order } from '../../shared/models/order';
 import { OrderProduct } from '../../shared/models/order-product';
 import { Product } from '../../shared/models/product';
+import { AuthData, hasValidToken } from '../../shared/responses/auth-data';
 
-const STORAGE_TOKEN_KEY = 'webshop-token';
+const STORAGE_AUTH_KEY = 'webshop-auth';
+const EMPTY_AUTH: AuthData = {
+  success: false,
+  message: null,
+  username: null,
+  email: null,
+  password: null,
+  token: '',
+  validTo: null
+};
 
 @Injectable({ providedIn: 'root' })
 export class DataStoreService {
-  private readonly tokenSubject = new BehaviorSubject<string>(this.readInitialToken());
+  private readonly authSubject = new BehaviorSubject<AuthData>(this.readInitialAuth());
   private readonly orderSubject = new BehaviorSubject<Order>(this.createEmptyOrder());
 
-  readonly token$ = this.tokenSubject.asObservable();
+  readonly auth$ = this.authSubject.asObservable();
+  readonly token$ = this.auth$.pipe(map(data => data.token?.trim() ?? ''));
   readonly order$ = this.orderSubject.asObservable();
-  readonly isLoggedIn$ = this.token$.pipe(map(token => token.trim().length > 0));
+  readonly isLoggedIn$ = this.auth$.pipe(map(hasValidToken));
 
   get token(): string {
-    return this.tokenSubject.value;
+    return this.authSubject.value.token?.trim() ?? '';
   }
 
-  set token(value: string) {
-    const normalized = value ?? '';
-    if (normalized === this.tokenSubject.value) {
-      return;
-    }
+  get authData(): AuthData {
+    return this.authSubject.value;
+  }
 
-    this.tokenSubject.next(normalized);
-    this.persistToken(normalized);
+  set authData(value: AuthData | null) {
+    const next = this.normaliseAuth(value);
+    this.authSubject.next(next);
+    this.persistAuth(next);
   }
 
   get currentOrder(): Order {
@@ -38,7 +49,7 @@ export class DataStoreService {
   }
 
   resetAuth(): void {
-    this.token = '';
+    this.authData = null;
     this.resetOrder();
   }
 
@@ -119,23 +130,49 @@ export class DataStoreService {
     return JSON.parse(JSON.stringify(value)) as T;
   }
 
-  private persistToken(token: string): void {
+  private normaliseAuth(value: AuthData | null): AuthData {
+    if (!value) {
+      return { ...EMPTY_AUTH };
+    }
+
+    const validTo = value.validTo instanceof Date
+      ? value.validTo.toISOString()
+      : value.validTo ?? null;
+
+    return {
+      success: Boolean(value.success),
+      message: value.message ?? null,
+      username: value.username ?? null,
+      email: value.email ?? null,
+      password: null,
+      token: value.token?.trim() ?? '',
+      validTo
+    };
+  }
+
+  private persistAuth(auth: AuthData): void {
     try {
-      if (!token) {
-        localStorage.removeItem(STORAGE_TOKEN_KEY);
+      if (!auth.token) {
+        localStorage.removeItem(STORAGE_AUTH_KEY);
       } else {
-        localStorage.setItem(STORAGE_TOKEN_KEY, token);
+        localStorage.setItem(STORAGE_AUTH_KEY, JSON.stringify(auth));
       }
     } catch {
       // Ignore storage failures (e.g. SSR, private mode)
     }
   }
 
-  private readInitialToken(): string {
+  private readInitialAuth(): AuthData {
     try {
-      return localStorage.getItem(STORAGE_TOKEN_KEY) ?? '';
+      const raw = localStorage.getItem(STORAGE_AUTH_KEY);
+      if (!raw) {
+        return { ...EMPTY_AUTH };
+      }
+
+      const parsed = JSON.parse(raw) as AuthData;
+      return this.normaliseAuth(parsed);
     } catch {
-      return '';
+      return { ...EMPTY_AUTH };
     }
   }
 }

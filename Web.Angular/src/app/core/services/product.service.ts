@@ -5,6 +5,7 @@ import { BaseApiService } from './base-api.service';
 import { Response } from '../../shared/responses/response';
 import { Product } from '../../shared/models/product';
 import { ProductFilter } from '../../shared/queries/product-filter';
+import { toQueryString } from '../../shared/extensions/query-string';
 
 @Injectable({ providedIn: 'root' })
 export class ProductService extends BaseApiService {
@@ -13,7 +14,8 @@ export class ProductService extends BaseApiService {
   }
 
   getProducts(filter?: ProductFilter | null): Observable<Response<Product[]>> {
-    const params = this.createFilterParams(filter);
+    const query = filter ? toQueryString(filter) : '';
+    const params = query ? new HttpParams({ fromString: query }) : undefined;
     const request = this.http.get<Product[]>(`${this.baseUrl}/products`, {
       params,
       observe: 'response'
@@ -28,31 +30,5 @@ export class ProductService extends BaseApiService {
     });
 
     return this.toResponse(request);
-  }
-
-  private createFilterParams(filter?: ProductFilter | null): HttpParams | undefined {
-    if (!filter) {
-      return undefined;
-    }
-
-    let params = new HttpParams();
-
-    if (filter.number > 0) {
-      params = params.set('Number', filter.number.toString());
-    }
-
-    if (filter.size > 0) {
-      params = params.set('Size', filter.size.toString());
-    }
-
-    if (filter.nameContains) {
-      params = params.set('NameContains', filter.nameContains);
-    }
-
-    if (typeof filter.onlyAvailable === 'boolean') {
-      params = params.set('OnlyAvailable', filter.onlyAvailable ? 'true' : 'false');
-    }
-
-    return params.keys().length > 0 ? params : undefined;
   }
 }

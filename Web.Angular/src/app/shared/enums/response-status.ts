@@ -17,3 +17,13 @@ export const isSuccessStatus = (status: ResponseStatus | number): boolean => {
   const value = Number(status);
   return value >= 200 && value <= 299;
 };
+
+export const asResponseStatus = (statusCode: number): ResponseStatus =>
+  Object.prototype.hasOwnProperty.call(ResponseStatus, statusCode)
+    ? (statusCode as ResponseStatus)
+    : ResponseStatus.UnknownError;
+
+export const toStatusCode = (status: ResponseStatus): number => status;
+
+export const isLoadingStatus = (status: ResponseStatus | number): boolean =>
+  Number(status) === ResponseStatus.Loading;
