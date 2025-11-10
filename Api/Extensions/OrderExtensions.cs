@@ -3,7 +3,7 @@ using Shared.Models;
 
 namespace Api.Extensions;
 
-public static class OrderQueryable
+public static class OrderExtensions
 {
     public static IQueryable<Order> IncludeProducts(this IQueryable<Order> queryable) => queryable
         .Include(o => o.OrderProducts)!

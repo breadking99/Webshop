@@ -3,12 +3,7 @@
 
 <div class="layout-root">
     <header class="layout-header">
-        <NavLink href="/" class="brand">Webshop</NavLink>
-
-        @if (DataManager.IsLoggedIn)
-        {
-            <NavMenu />
-        }
+        <NavMenu />
 
         <div class="header-actions">
             @if (!DataManager.IsLoggedIn)
@@ -21,6 +16,7 @@
             }
             else
             {
+                <span class="welcome">Welcome, @DataManager.AuthData.Email</span>
                 <button type="button"
                         class="logout"
                         @onclick="LogoutAsync">Logout</button>

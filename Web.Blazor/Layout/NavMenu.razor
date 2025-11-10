@@ -2,12 +2,18 @@
 
 <nav class="header-nav">
     <NavLink class="nav-link"
-             href="/products"
-             Match="NavLinkMatch.Prefix">Products</NavLink>
-    <NavLink class="nav-link"
-             href="/order">@OrderLabel</NavLink>
-    <NavLink class="nav-link"
-             href="/my-orders">My Orders</NavLink>
+             href=""
+             Match="NavLinkMatch.All">Home</NavLink>
+    @if (DataManager.IsLoggedIn)
+    {
+        <NavLink class="nav-link"
+                 href="/products"
+                 Match="NavLinkMatch.Prefix">Products</NavLink>
+        <NavLink class="nav-link"
+                 href="/order">@OrderLabel</NavLink>
+        <NavLink class="nav-link"
+                 href="/my-orders">My Orders</NavLink>
+    }
 </nav>
 
 @code {

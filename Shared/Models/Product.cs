@@ -22,7 +22,11 @@ public class Product
     #endregion
 
     #region Not Mapped
+    [NotMapped]
     public int OrderedCount => OrderProducts?.Aggregate(0, (acc, x) => x.Count + acc) ?? 0;
-    public bool IsAvailable => Store - OrderedCount > 0;
+    [NotMapped]
+    public int AvailableCount => Store - OrderedCount;
+    [NotMapped]
+    public bool IsAvailable => AvailableCount - OrderedCount > 0;
     #endregion
 }

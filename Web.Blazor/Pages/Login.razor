@@ -10,7 +10,7 @@
           Title="Login"
           NavTitle="Register"
           ButtonNavigateTo="/register"
-          SubmitNavigateTo="/products"
+          SubmitNavigateTo="/"
           Request="@Request"
           Response="@Response">
     <Content Context="request">
@@ -33,7 +33,7 @@
     {
         if (DataManager.IsLoggedIn)
         {
-            Navigation.NavigateTo("/products", true);
+            Navigation.NavigateTo("/", true);
             return;
         }
 

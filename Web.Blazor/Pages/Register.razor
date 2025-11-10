@@ -10,7 +10,7 @@
           Title="Register"
           NavTitle="Login"
           ButtonNavigateTo="/login"
-          SubmitNavigateTo="/products"
+          SubmitNavigateTo="/"
           Request="@RequestModel"
           Response="@ResponseModel">
     <Content Context="request">
@@ -37,7 +37,7 @@
     {
         if (DataManager.IsLoggedIn)
         {
-            Navigation.NavigateTo("/products", true);
+            Navigation.NavigateTo("/", true);
             return;
         }
         ResponseModel.Request = () => AuthService.PostRegisterAsync(RequestModel);

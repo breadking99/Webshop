@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Api.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shared.Models;
@@ -20,7 +21,8 @@ public class ProductController(Context context) : ControllerBase
     public async Task<ActionResult<List<Product>>> GetProductsAsync(
         [FromQuery] PagerQuery? pager)
     {
-        IQueryable<Product> queryable = context.Products;
+        IQueryable<Product> queryable = context.Products
+            .IncludeOrderCounts();
 
         if (pager != null && pager.Number > 0 && pager.Size > 0)
         {
@@ -39,6 +41,7 @@ public class ProductController(Context context) : ControllerBase
         [FromRoute] int id)
     {
         Product? product = await context.Products
+            .IncludeOrderCounts()
             .Where(x => x.Id == id)
             .FirstOrDefaultAsync();
 

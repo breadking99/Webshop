@@ -19,7 +19,7 @@ else if (ProductList?.Count > 0)
         {
             <div class="product-card">
                 <h3>@product.Name</h3>
-                <p>In stock: @product.Store</p>
+                <p>In stock: @product.AvailableCount</p>
                 <button class="btn btn-primary" type="button" @onclick="() => NavigateToProduct(product.Id)">View details</button>
             </div>
         }
