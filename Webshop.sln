@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Blazor", "Web.Blazor\We
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{20367519-F60B-4591-B912-51A840477DEF}"
 EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "Web.Angular", "Web.Angular\Web.Angular.esproj", "{1569CBB0-A5D9-3EE4-DB54-9FDE79E7FA33}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,12 @@ Global
 		{20367519-F60B-4591-B912-51A840477DEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20367519-F60B-4591-B912-51A840477DEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20367519-F60B-4591-B912-51A840477DEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1569CBB0-A5D9-3EE4-DB54-9FDE79E7FA33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1569CBB0-A5D9-3EE4-DB54-9FDE79E7FA33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1569CBB0-A5D9-3EE4-DB54-9FDE79E7FA33}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{1569CBB0-A5D9-3EE4-DB54-9FDE79E7FA33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1569CBB0-A5D9-3EE4-DB54-9FDE79E7FA33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1569CBB0-A5D9-3EE4-DB54-9FDE79E7FA33}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
