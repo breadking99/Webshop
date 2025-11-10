@@ -35,6 +35,8 @@
 
     protected override void OnInitialized()
     {
+        ResponseModel.Update = () => _ = InvokeAsync(StateHasChanged);
+
         if (DataManager.IsLoggedIn)
         {
             Navigation.NavigateTo("/", true);

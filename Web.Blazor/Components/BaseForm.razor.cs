@@ -20,6 +20,28 @@ public partial class BaseForm<TRequest, TResponse>
     [Parameter] public RenderFragment<TRequest>? Content { get; set; }
     [Inject] private NavigationManager Navigation { get; init; } = null!;
     private bool IsLoading => Response?.IsLoading ?? false;
+    private TResponse? previousResponse;
+    private bool isSubscribed;
+
+    protected override void OnParametersSet()
+    {
+        if (!ReferenceEquals(Response, previousResponse))
+        {
+            previousResponse = Response;
+            isSubscribed = false;
+        }
+
+        if (Response is not null && !isSubscribed)
+        {
+            Action? previous = Response.Update;
+            Response.Update = () =>
+            {
+                previous?.Invoke();
+                _ = InvokeAsync(StateHasChanged);
+            };
+            isSubscribed = true;
+        }
+    }
 
     private async Task OnSubmitClickedAsync()
     {

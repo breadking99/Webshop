@@ -64,13 +64,11 @@ else
             return;
         }
 
-        /*
         if (ResponseModel.Update is null)
         {
-            ResponseModel.Update = StateHasChanged;
+            ResponseModel.Update = () => _ = InvokeAsync(StateHasChanged);
         }
-        */
-        
+
 
         if (currentProductId == Id)
         {

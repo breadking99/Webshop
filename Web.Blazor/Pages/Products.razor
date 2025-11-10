@@ -67,15 +67,16 @@ else if (ResponseModel.IsSuccess)
 
 	protected override void OnInitialized()
 	{
+		ResponseModel.Update = () => _ = InvokeAsync(StateHasChanged);
+
 		if (!DataManager.IsLoggedIn)
 		{
 			Navigation.NavigateTo("/login", true);
-			ResponseModel.Update += StateHasChanged;
 			return;
- }
+	}
 
- ResponseModel.Request = () => ProductService.GetProductsAsync(Filter);
- }
+	ResponseModel.Request = () => ProductService.GetProductsAsync(Filter);
+	}
 
  protected override async Task OnInitializedAsync()
  {

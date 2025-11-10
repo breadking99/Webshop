@@ -76,7 +76,7 @@ else
             return;
         }
 
-        //SubmitResponse.Update = StateHasChanged;
+        SubmitResponse.Update = () => _ = InvokeAsync(StateHasChanged);
         SubmitResponse.Request = SubmitOrderAsync;
         DataManager.StateChanged += OnStateChanged;
         subscribed = true;
