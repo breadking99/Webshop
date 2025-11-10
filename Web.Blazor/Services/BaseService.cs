@@ -16,7 +16,7 @@ public class BaseService
     public BaseService(HttpClient httpClient)
     {
         this.httpClient = httpClient;
-        InitAuthHeader();
+        httpClient.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue
     }
     #endregion
 
