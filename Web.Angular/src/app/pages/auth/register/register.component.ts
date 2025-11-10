@@ -6,7 +6,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { DataStoreService } from '../../../core/state/data-store.service';
 import { createLoadingResponse, Response } from '../../../shared/responses/response';
 import { isSuccessStatus } from '../../../shared/enums/response-status';
-import { RegisterRequest } from '../../../shared/requests/register-request';
+import { AuthRequest } from '../../../shared/requests/auth-request';
 import { AuthData, hasValidToken } from '../../../shared/responses/auth-data';
 
 @Component({
@@ -41,7 +41,7 @@ export class RegisterComponent implements OnDestroy {
       confirmPassword: ['', [Validators.required]]
     });
 
-    if (this.store.token) {
+    if (hasValidToken(this.store.authData)) {
       this.router.navigate(['/'], { replaceUrl: true });
     }
   }
@@ -64,11 +64,11 @@ export class RegisterComponent implements OnDestroy {
       this.form.controls.confirmPassword.setErrors(Object.keys(rest).length ? rest : null);
     }
 
-    const request: RegisterRequest = this.form.getRawValue();
+    const request: AuthRequest = this.form.getRawValue();
 
-  this.response = createLoadingResponse<AuthData>();
+    this.response = createLoadingResponse<AuthData>();
     this.isSubmitting = true;
-  this.cdr.markForCheck();
+    this.cdr.markForCheck();
 
     this.authService.register(request).pipe(
       takeUntil(this.destroy$),

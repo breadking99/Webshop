@@ -8,10 +8,13 @@ namespace Api;
 public class Context(DbContextOptions<Context> options)
     : IdentityDbContext<User>(options)
 {
+    #region Tables
     public DbSet<Order> Orders { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<OrderProduct> OrderProducts { get; set; }
+    #endregion
 
+    #region Methods
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -26,6 +29,7 @@ public class Context(DbContextOptions<Context> options)
             .WithMany(p => p.OrderProducts)
             .HasForeignKey(op => op.ProductId);
     }
+    #endregion
 }
 
 public class ContextFactory : IDesignTimeDbContextFactory<Context>

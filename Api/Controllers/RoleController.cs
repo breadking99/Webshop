@@ -8,13 +8,15 @@ namespace Api.Controllers;
 [Route("roles")]
 [Authorize(Roles = "admin")]
 [ApiController]
-public class RoleController(RoleManager<IdentityRole> roleManager, UserManager<User> userManager) : ControllerBase
+public class RoleController(RoleManager<IdentityRole> roleManager, UserManager<User> userManager)
+    : ControllerBase
 {
     #region Fields
     private readonly RoleManager<IdentityRole> roleManager = roleManager;
     private readonly UserManager<User> userManager = userManager;
     #endregion
 
+    #region Methods (POST)
     [HttpPost("{roleName}")]
     public async Task<IActionResult> PostAsync(
         [FromRoute] string roleName)
@@ -43,4 +45,5 @@ public class RoleController(RoleManager<IdentityRole> roleManager, UserManager<U
         if (result.Succeeded) return Ok($"Role {roleName} added to user {user.UserName}!");
         else return BadRequest("Failed to add role to user!");
     }
+    #endregion
 }

@@ -14,7 +14,7 @@ public class UserController(UserManager<User> userManager) : ControllerBase
     private readonly UserManager<User> userManager = userManager;
     #endregion
 
-    #region Methods
+    #region Methods (GET)
     [HttpGet]
     public async Task<ActionResult<IEnumerable<User>>> GetUsersAsync()
     {

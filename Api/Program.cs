@@ -6,7 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Shared.Models;
 using System.Text;
 
-/* Notes for Migration:
+/* NOTES FOR ME (Migration):
 # Database (Package Manager Consoler)
 - Install: dotnet tool install --global dotnet-ef
 - Add migration: Add-Migration InitialCreate
@@ -15,14 +15,14 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add connection string and DbContext
+//! Add connection string and DbContext
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
 builder.Services.AddDbContext<Context>(options =>
 {
     options.UseSqlite(connectionString);
 });
 
-// Remove cors policy:
+//! Remove cors policy:
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AnyCorsPolicy", builder =>
@@ -31,7 +31,7 @@ builder.Services.AddCors(options =>
                     .AllowAnyHeader());
 });
 
-// Add user identity:
+//! Add user identity:
 builder.Services.AddDefaultIdentity<User>(options =>
 {
     options.User.AllowedUserNameCharacters = "aábcdeéfghiíjklmnoóöőpqrstuúüűvwxyzAÁBCDEÉFGHIÍJKLMNOÓÖŐPQRSTUÚÜŰVWXYZ0123456789-._@+ ";
@@ -42,7 +42,7 @@ builder.Services.AddDefaultIdentity<User>(options =>
 .AddEntityFrameworkStores<Context>()
 .AddDefaultTokenProviders();
 
-// Authentication and Authorization:
+//! Authentication and Authorization:
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -66,31 +66,31 @@ builder.Services.AddAuthentication(options =>
 })
 .AddCookie();
 
-// Add services to the container.
+//! Add services to the container.
 builder.Services.AddControllers()
 .AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault;
 });
 
-// Health checks (standard built-in)
+//! Health checks (standard built-in)
 builder.Services.AddHealthChecks();
 
-// Add Swagger services
+//! Add Swagger services
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+//! Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// Use any CORS:
+//! Use any CORS:
 if (true)
 {
     app.UseCors("AnyCorsPolicy");
@@ -98,11 +98,11 @@ if (true)
 
 app.UseHttpsRedirection();
 
-// Ensure authentication is used before authorization
+//! Ensure authentication is used before authorization
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Map health check endpoint at /status and allow anonymous access
+//! Map health check endpoint at /status and allow anonymous access
 app.MapHealthChecks("/status").AllowAnonymous();
 
 app.MapControllers();

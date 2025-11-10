@@ -1,4 +1,3 @@
-export interface LoginRequest {
-  email: string;
-  password: string;
-}
+import { AuthRequest } from './auth-request';
+
+export type LoginRequest = AuthRequest;

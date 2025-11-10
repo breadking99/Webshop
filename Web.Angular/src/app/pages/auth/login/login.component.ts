@@ -6,7 +6,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { DataStoreService } from '../../../core/state/data-store.service';
 import { createLoadingResponse, Response } from '../../../shared/responses/response';
 import { isSuccessStatus } from '../../../shared/enums/response-status';
-import { LoginRequest } from '../../../shared/requests/login-request';
+import { AuthRequest } from '../../../shared/requests/auth-request';
 import { AuthData, hasValidToken } from '../../../shared/responses/auth-data';
 
 @Component({
@@ -39,7 +39,7 @@ export class LoginComponent implements OnDestroy {
       password: ['', [Validators.required]]
     });
 
-    if (this.store.token) {
+    if (hasValidToken(this.store.authData)) {
       this.router.navigate(['/'], { replaceUrl: true });
     }
   }
@@ -50,11 +50,12 @@ export class LoginComponent implements OnDestroy {
       return;
     }
 
-    const request: LoginRequest = this.form.getRawValue();
+    const { email, password } = this.form.getRawValue();
+    const request: AuthRequest = { email, password };
 
-  this.response = createLoadingResponse<AuthData>();
+    this.response = createLoadingResponse<AuthData>();
     this.isSubmitting = true;
-  this.cdr.markForCheck();
+    this.cdr.markForCheck();
 
     this.authService.login(request).pipe(
       takeUntil(this.destroy$),

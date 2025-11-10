@@ -15,14 +15,15 @@ namespace Api.Controllers;
 [Route("auth")]
 [AllowAnonymous]
 [ApiController]
-public class AuthController(UserManager<User> userManager, IConfiguration configuration) : ControllerBase, IAuthController
+public class AuthController(UserManager<User> userManager, IConfiguration configuration)
+    : ControllerBase, IAuthController
 {
     #region Fields
     private readonly UserManager<User> userManager = userManager;
     private readonly IConfiguration configuration = configuration;
     #endregion
 
-    #region Methods
+    #region Methods (POST)
     [HttpPost("login")]
     public async Task<ActionResult<AuthData>> PostLoginAsync(
         [FromBody] AuthRequest request)
@@ -57,7 +58,9 @@ public class AuthController(UserManager<User> userManager, IConfiguration config
 
         return Unauthorized("Unsuccessful registration attempt.");
     }
+    #endregion
 
+    #region Methods (Private)
     private async Task<AuthData> RegisterAsync(AuthRequest request)
     {
         // Is email exist:

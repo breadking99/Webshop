@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Shared.Interfaces;
 using Shared.Models;
 using Shared.Queries;
 
@@ -10,13 +11,13 @@ namespace Api.Controllers;
 [Route("products")]
 [Authorize]
 [ApiController]
-public class ProductController(Context context) : ControllerBase
+public class ProductController(Context context) : ControllerBase, IProductController
 {
     #region Fields
     private readonly Context context = context;
     #endregion
 
-    #region Methods
+    #region Methods (GET)
     [HttpGet]
     public async Task<ActionResult<List<Product>>> GetProductsAsync(
         [FromQuery] ProductFilter? pager)
@@ -44,7 +45,9 @@ public class ProductController(Context context) : ControllerBase
         if (product is null) return NotFound();
         return Ok(product);
     }
+    #endregion
 
+    #region Methods (POST)
     [Authorize(Roles = "admin")]
     [HttpPost]
     public async Task<IActionResult> PostProductAsync(
@@ -60,7 +63,9 @@ public class ProductController(Context context) : ControllerBase
 
         return Ok();
     }
+    #endregion
 
+    #region Methods (PUT)
     [Authorize(Roles = "admin")]
     [HttpPut("{id}")]
     public async Task<IActionResult> PutProductByIdAsync(

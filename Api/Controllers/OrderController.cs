@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Shared.Interfaces;
 using Shared.Models;
 using System.Security.Claims;
 
@@ -10,7 +11,7 @@ namespace Api.Controllers;
 [Route("orders")]
 [Authorize]
 [ApiController]
-public class OrderController(Context context) : ControllerBase
+public class OrderController(Context context) : ControllerBase, IOrderController
 {
     #region Fields
     private readonly Context context = context;

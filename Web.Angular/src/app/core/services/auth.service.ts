@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { BaseApiService } from './base-api.service';
-import { LoginRequest } from '../../shared/requests/login-request';
-import { RegisterRequest } from '../../shared/requests/register-request';
+import { AuthRequest } from '../../shared/requests/auth-request';
 import { Response } from '../../shared/responses/response';
 import { DataStoreService } from '../state/data-store.service';
 import { isSuccessStatus, ResponseStatus } from '../../shared/enums/response-status';
@@ -18,7 +17,7 @@ export class AuthService extends BaseApiService {
     super(http);
   }
 
-  login(request: LoginRequest): Observable<Response<AuthData>> {
+  login(request: AuthRequest): Observable<Response<AuthData>> {
     console.log('[AuthService] login request', { email: request.email });
     const call = this.http.post<AuthData>(`${this.baseUrl}/auth/login`, request, {
       observe: 'response'
@@ -32,7 +31,7 @@ export class AuthService extends BaseApiService {
     );
   }
 
-  register(request: RegisterRequest): Observable<Response<AuthData>> {
+  register(request: AuthRequest): Observable<Response<AuthData>> {
     console.log('[AuthService] register request', { email: request.email });
     const call = this.http.post<AuthData>(`${this.baseUrl}/auth/register`, request, {
       observe: 'response'

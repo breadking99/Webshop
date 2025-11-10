@@ -1,5 +1,3 @@
-import { LoginRequest } from './login-request';
+import { AuthRequest } from './auth-request';
 
-export interface RegisterRequest extends LoginRequest {
-  confirmPassword: string;
-}
+export type RegisterRequest = AuthRequest;
