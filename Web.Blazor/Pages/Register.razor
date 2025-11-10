@@ -1,0 +1,47 @@
+@page "/register"
+
+@inject IAuthService AuthService
+@inject NavigationManager Navigation
+
+<PageTitle>Register</PageTitle>
+
+<BaseForm TRequest="RegisterRequest"
+          TResponse="Response<string>"
+          Title="Register"
+          NavTitle="Login"
+          ButtonNavigateTo="/login"
+          SubmitNavigateTo="/products"
+          Request="@RequestModel"
+          Response="@ResponseModel">
+    <Content Context="request">
+        <Entry @bind-Value="request.Email"
+               Label="Email"
+               Type="email"
+               AutoComplete="email" />
+        <Entry @bind-Value="request.Password"
+               Label="Password"
+               Type="password"
+               AutoComplete="new-password" />
+        <Entry @bind-Value="request.ConfirmPassword"
+               Label="Confirm Password"
+               Type="password"
+               AutoComplete="new-password" />
+    </Content>
+</BaseForm>
+
+@code {
+    private readonly RegisterRequest RequestModel = new();
+    private readonly Response<string> ResponseModel = new();
+
+    protected override void OnInitialized()
+    {
+        if (DataManager.IsLoggedIn)
+        {
+            Navigation.NavigateTo("/products", true);
+            return;
+        }
+
+        ResponseModel.Update = StateHasChanged;
+        ResponseModel.Request = () => AuthService.PostRegisterAsync(RequestModel);
+    }
+}

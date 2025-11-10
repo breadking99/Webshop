@@ -1,0 +1,72 @@
+@page "/my-orders"
+@using OrderModel = Shared.Models.Order
+@using OrderProductModel = Shared.Models.OrderProduct
+
+@inject IOrderService OrderService
+@inject NavigationManager Navigation
+
+<PageTitle>My Orders</PageTitle>
+
+<ResponseMessage Response="@ResponseModel" />
+
+@if (ResponseModel.IsLoading)
+{
+    <p>Loading your orders...</p>
+}
+else if (Orders?.Count > 0)
+{
+    <div class="orders-list">
+        @foreach (var order in Orders)
+        {
+            <section class="order-card">
+                <header class="d-flex justify-content-between">
+                    <h3 class="h5">Order #@order.Id</h3>
+                    <span>@(order.OrderProducts?.Sum(x => x.Count) ?? 0) item(s)</span>
+                </header>
+                <ul class="list-unstyled mb-0">
+                    @if (order.OrderProducts is { Count: > 0 })
+                    {
+                        @foreach (var item in order.OrderProducts)
+                        {
+                            <li>
+                                <strong>@(item.Product?.Name ?? $"Product #{item.ProductId}")</strong>
+                                <span class="text-muted"> x @item.Count</span>
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        <li><em>No products found for this order.</em></li>
+                    }
+                </ul>
+            </section>
+        }
+    </div>
+}
+else if (ResponseModel.IsSuccess)
+{
+    <p>You have not placed any orders yet.</p>
+}
+
+@code {
+    private readonly Response<List<OrderModel>> ResponseModel = new();
+    private IReadOnlyList<OrderModel>? Orders => ResponseModel.Value;
+
+    protected override void OnInitialized()
+    {
+        if (!DataManager.IsLoggedIn)
+        {
+            Navigation.NavigateTo("/login", true);
+            return;
+        }
+
+        ResponseModel.Update = StateHasChanged;
+        ResponseModel.Request = () => OrderService.GetMyOrdersAsync();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!DataManager.IsLoggedIn) return;
+        await ResponseModel.DoRequestAsync();
+    }
+}

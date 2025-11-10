@@ -16,6 +16,7 @@ public static class OrderQueryable
                 Id = op.Id,
                 OrderId = op.OrderId,
                 ProductId = op.ProductId,
+                Count = op.Count,
                 Product = new Product
                 {
                     Id = op.Product!.Id,

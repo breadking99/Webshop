@@ -1,0 +1,57 @@
+@page "/products"
+@using ProductModel = Shared.Models.Product
+
+@inject IProductService ProductService
+@inject NavigationManager Navigation
+
+<PageTitle>Products</PageTitle>
+
+<ResponseMessage Response="@ResponseModel" />
+
+@if (ResponseModel.IsLoading)
+{
+    <p>Loading products...</p>
+}
+else if (ProductList?.Count > 0)
+{
+    <div class="product-grid">
+        @foreach (var product in ProductList)
+        {
+            <div class="product-card">
+                <h3>@product.Name</h3>
+                <p>In stock: @product.Store</p>
+                <button class="btn btn-primary" type="button" @onclick="() => NavigateToProduct(product.Id)">View details</button>
+            </div>
+        }
+    </div>
+}
+else if (ResponseModel.IsSuccess)
+{
+    <p>No products available.</p>
+}
+
+@code {
+    private readonly Response<List<ProductModel>> ResponseModel = new();
+    private IReadOnlyList<ProductModel>? ProductList => ResponseModel.Value;
+
+    protected override void OnInitialized()
+    {
+        if (!DataManager.IsLoggedIn)
+        {
+            Navigation.NavigateTo("/login", true);
+            return;
+        }
+
+        ResponseModel.Update = StateHasChanged;
+        ResponseModel.Request = () => ProductService.GetProductsAsync(null);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!DataManager.IsLoggedIn) return;
+        await ResponseModel.DoRequestAsync();
+    }
+
+    private void NavigateToProduct(int id)
+        => Navigation.NavigateTo($"/products/{id}");
+}

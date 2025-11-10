@@ -1,16 +1,59 @@
 ﻿@inherits LayoutComponentBase
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+@implements IDisposable
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+<div class="layout-root">
+    <header class="layout-header">
+        <NavLink href="/" class="brand">Webshop</NavLink>
+
+        @if (DataManager.IsLoggedIn)
+        {
+            <NavMenu />
+        }
+
+        <div class="header-actions">
+            @if (!DataManager.IsLoggedIn)
+            {
+                <span class="auth-links">
+                    <NavLink href="/login" Match="NavLinkMatch.All">Login</NavLink>
+                    <span class="separator">/</span>
+                    <NavLink href="/register" Match="NavLinkMatch.All">Register</NavLink>
+                </span>
+            }
+            else
+            {
+                <button type="button"
+                        class="logout"
+                        @onclick="LogoutAsync">Logout</button>
+            }
         </div>
+    </header>
 
-        <article class="content px-4">
+    <main class="layout-body">
+        <article class="layout-content">
             @Body
         </article>
     </main>
 </div>
+
+@code {
+    [Inject] private NavigationManager Navigation { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        DataManager.StateChanged += OnStateChanged;
+    }
+
+    private void OnStateChanged()
+        => _ = InvokeAsync(StateHasChanged);
+
+    private void LogoutAsync()
+    {
+        DataManager.ResetAuth();
+        Navigation.NavigateTo("/login");
+    }
+
+    public void Dispose()
+    {
+        DataManager.StateChanged -= OnStateChanged;
+    }
+}

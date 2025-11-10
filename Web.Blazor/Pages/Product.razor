@@ -1,0 +1,116 @@
+@page "/products/{Id:int}"
+@using ProductModel = Shared.Models.Product
+
+@inject IProductService ProductService
+@inject NavigationManager Navigation
+
+<PageTitle>Product Details</PageTitle>
+
+<ResponseMessage Response="@ResponseModel" />
+
+@if (ResponseModel.IsLoading)
+{
+    <p>Loading product...</p>
+}
+else if (CurrentProduct is null)
+{
+    if (ResponseModel.IsSuccess)
+    {
+        <p>We could not find this product.</p>
+    }
+}
+else
+{
+    <div class="product-detail">
+        <h1>@CurrentProduct.Name</h1>
+        <p>Available: @CurrentProduct.Store</p>
+        <div class="mb-3">
+            <label class="form-label" for="quantity">Quantity</label>
+            <InputNumber id="quantity"
+                         class="form-control"
+                         @bind-Value="quantity"
+                         min="1"
+                         max="@MaxSelectable"
+                         disabled="@(!CanAdd)" />
+        </div>
+        <button class="btn btn-primary"
+                type="button"
+                disabled="@(!CanAdd)"
+                @onclick="AddToBasket">Add to basket</button>
+        @if (!string.IsNullOrWhiteSpace(InfoMessage))
+        {
+            <p class="mt-2">@InfoMessage</p>
+        }
+    </div>
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+
+    private readonly Response<ProductModel> ResponseModel = new();
+    private int currentProductId = -1;
+    private bool shouldLoad;
+    private int quantity = 1;
+    private string InfoMessage { get; set; } = string.Empty;
+    private ProductModel? CurrentProduct => ResponseModel.Value;
+    private int MaxSelectable => CurrentProduct is null ? 1 : Math.Max(1, CurrentProduct.Store);
+    private bool CanAdd => CurrentProduct is not null && CurrentProduct.Store > 0;
+
+    protected override void OnParametersSet()
+    {
+        if (!DataManager.IsLoggedIn)
+        {
+            Navigation.NavigateTo("/login", true);
+            return;
+        }
+
+        if (ResponseModel.Update is null)
+        {
+            ResponseModel.Update = StateHasChanged;
+        }
+
+        if (currentProductId == Id)
+        {
+            return;
+        }
+
+        currentProductId = Id;
+        ResponseModel.Request = () => ProductService.GetProductByIdAsync(Id);
+        shouldLoad = true;
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!DataManager.IsLoggedIn || !shouldLoad)
+        {
+            return;
+        }
+
+        shouldLoad = false;
+        await ResponseModel.DoRequestAsync();
+        quantity = 1;
+        InfoMessage = string.Empty;
+    }
+
+    private void AddToBasket()
+    {
+        if (CurrentProduct is null)
+        {
+            return;
+        }
+
+        int available = Math.Max(0, CurrentProduct.Store);
+        if (available == 0)
+        {
+            InfoMessage = "This product is currently out of stock.";
+            return;
+        }
+
+        int selected = Math.Clamp(quantity, 1, available);
+        DataManager.IncrementProduct(CurrentProduct, selected);
+        quantity = selected;
+        InfoMessage = selected == 1
+            ? "Added 1 item to your basket."
+            : $"Added {selected} items to your basket.";
+    }
+}

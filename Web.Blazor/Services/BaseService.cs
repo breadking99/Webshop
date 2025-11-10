@@ -2,10 +2,10 @@
 using Newtonsoft.Json.Linq;
 using Shared.Enums;
 using Shared.Responses;
-using System;
 using System.Net.Http.Headers;
 using System.Text;
 using Web.Blazor.Extensions;
+using Web.Blazor.Managers;
 
 namespace Web.Blazor.Services;
 
@@ -16,14 +16,17 @@ public class BaseService
     public BaseService(HttpClient httpClient)
     {
         this.httpClient = httpClient;
-        httpClient.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue
+        UpdateAuthHeader();
     }
     #endregion
 
     #region Properties
-    public static bool IsLoggedIn => !string.IsNullOrEmpty(Token);
     protected StringBuilder ServiceAddress => GetServiceAddress();
-    protected static string Token { get; set; } = string.Empty;
+    protected static string Token
+    {
+        get => DataManager.Token;
+        set => DataManager.Token = value;
+    }
     #endregion
 
     #region Fields
@@ -35,7 +38,7 @@ public class BaseService
     #region Methods (Protected, GET)
     // No generic
     protected async Task<Response> GetAsync(string uri)
-        => await DoRequest(() => httpClient.GetAsync(uri));
+        => await ExecuteAsync(() => httpClient.GetAsync(uri));
     protected async Task<Response> GetAsync(object[]? parameters = null)
         => await GetAsync<object>(parameters);
     protected async Task<Response> GetAsync<TQuery>(object[]? parameters = null, TQuery? query = null) where TQuery : class
@@ -43,7 +46,7 @@ public class BaseService
 
     // TValue
     protected async Task<Response<TValue>> GetAsync<TValue>(string uri)
-        => await DoRequest<TValue>(() => httpClient.GetAsync(uri));
+        => await ExecuteAsync<TValue>(() => httpClient.GetAsync(uri));
     protected async Task<Response<TValue>> GetAsync<TValue>(object[]? parameters = null)
         => await GetAsync<TValue, object>(parameters);
     protected async Task<Response<TValue>> GetAsync<TValue, TQuery>(object[]? parameters = null, TQuery? query = null) where TQuery : class
@@ -53,7 +56,7 @@ public class BaseService
     #region Methods (Protected, POST)
     // No generic
     protected async Task<Response> PostAsync(string uri)
-        => await DoRequest(() => httpClient.PostAsync(uri, content: null));
+        => await ExecuteAsync(() => httpClient.PostAsync(uri, content: null));
     protected async Task<Response> PostAsync(object[]? parameters = null)
         => await PostAsync(GetUri<object>(parameters, null));
     protected async Task<Response> PostAsync<TQuery>(object[]? parameters = null, TQuery? query = null) where TQuery : class
@@ -61,7 +64,7 @@ public class BaseService
 
     // TRequest
     protected async Task<Response> PostAsync<TRequest>(string uri, TRequest? body) where TRequest : class
-        => await DoRequest(() => httpClient.PostAsync(uri, GetContent(body)));
+        => await ExecuteAsync(() => httpClient.PostAsync(uri, GetContent(body)));
     protected async Task<Response> PostAsync<TRequest>(TRequest? body = null, object[]? parameters = null) where TRequest : class
         => await PostAsync(GetUri<object>(parameters, null), body);
     protected async Task<Response> PostAsync<TRequest, TQuery>(TRequest? body = null, object[]? parameters = null, TQuery? query = null)
@@ -70,7 +73,7 @@ public class BaseService
 
     // TValue
     protected async Task<Response<TValue>> PostAsync<TValue>(string uri)
-        => await DoRequest<TValue>(() => httpClient.PostAsync(uri, content: null));
+        => await ExecuteAsync<TValue>(() => httpClient.PostAsync(uri, content: null));
     protected async Task<Response<TValue>> PostAsync<TValue>(object[]? parameters = null)
         => await PostAsync<TValue, object>(parameters);
     protected async Task<Response<TValue>> PostAsync<TValue, TQuery>(object[]? parameters = null, TQuery? query = null) where TQuery : class
@@ -78,7 +81,7 @@ public class BaseService
 
     // TRequest & TValue
     protected async Task<Response<TValue>> PostAsync<TRequest, TValue>(string uri, TRequest? body) where TRequest : class
-        => await DoRequest<TValue>(() => httpClient.PostAsync(uri, GetContent(body)));
+        => await ExecuteAsync<TValue>(() => httpClient.PostAsync(uri, GetContent(body)));
     protected async Task<Response<TValue>> PostAsync<TRequest, TValue>(TRequest? body = null, object[]? parameters = null) where TRequest : class
         => await PostAsync<TRequest, TValue>(GetUri<object>(parameters, null), body);
     protected async Task<Response<TValue>> PostAsync<TRequest, TValue, TQuery>(TRequest? body = null, object[]? parameters = null, TQuery? query = null)
@@ -89,7 +92,7 @@ public class BaseService
     #region Methods (Protected, PUT)
     // No generic
     protected async Task<Response> PutAsync(string uri)
-        => await DoRequest(() => httpClient.PutAsync(uri, content: null));
+        => await ExecuteAsync(() => httpClient.PutAsync(uri, content: null));
     protected async Task<Response> PutAsync(object[]? parameters = null)
         => await PutAsync(GetUri<object>(parameters, null));
     protected async Task<Response> PutAsync<TQuery>(object[]? parameters = null, TQuery? query = null) where TQuery : class
@@ -97,7 +100,7 @@ public class BaseService
 
     // TRequest
     protected async Task<Response> PutAsync<TRequest>(string uri, TRequest? body) where TRequest : class
-        => await DoRequest(() => httpClient.PutAsync(uri, GetContent(body)));
+        => await ExecuteAsync(() => httpClient.PutAsync(uri, GetContent(body)));
     protected async Task<Response> PutAsync<TRequest>(TRequest? body = null, object[]? parameters = null) where TRequest : class
         => await PutAsync(GetUri<object>(parameters, null), body);
     protected async Task<Response> PutAsync<TRequest, TQuery>(TRequest? body = null, object[]? parameters = null, TQuery? query = null)
@@ -106,7 +109,7 @@ public class BaseService
 
     // TValue
     protected async Task<Response<TValue>> PutAsync<TValue>(string uri)
-        => await DoRequest<TValue>(() => httpClient.PutAsync(uri, content: null));
+        => await ExecuteAsync<TValue>(() => httpClient.PutAsync(uri, content: null));
     protected async Task<Response<TValue>> PutAsync<TValue>(object[]? parameters = null)
         => await PutAsync<TValue, object>(parameters);
     protected async Task<Response<TValue>> PutAsync<TValue, TQuery>(object[]? parameters = null, TQuery? query = null) where TQuery : class
@@ -114,7 +117,7 @@ public class BaseService
 
     // TRequest & TValue
     protected async Task<Response<TValue>> PutAsync<TRequest, TValue>(string uri, TRequest? body) where TRequest : class
-        => await DoRequest<TValue>(() => httpClient.PutAsync(uri, GetContent(body)));
+        => await ExecuteAsync<TValue>(() => httpClient.PutAsync(uri, GetContent(body)));
     protected async Task<Response<TValue>> PutAsync<TRequest, TValue>(TRequest? body = null, object[]? parameters = null) where TRequest : class
         => await PutAsync<TRequest, TValue>(GetUri<object>(parameters, null), body);
     protected async Task<Response<TValue>> PutAsync<TRequest, TValue, TQuery>(TRequest? body = null, object[]? parameters = null, TQuery? query = null)
@@ -125,7 +128,7 @@ public class BaseService
     #region Methods (Protected, DELETE)
     // No generic
     protected async Task<Response> DeleteAsync(string uri)
-        => await DoRequest(() => httpClient.DeleteAsync(uri));
+        => await ExecuteAsync(() => httpClient.DeleteAsync(uri));
     protected async Task<Response> DeleteAsync(object[]? parameters = null)
         => await DeleteAsync(GetUri<object>(parameters, null));
     protected async Task<Response> DeleteAsync<TQuery>(object[]? parameters = null, TQuery? query = null) where TQuery : class
@@ -133,7 +136,7 @@ public class BaseService
 
     // TValue
     protected async Task<Response<TValue>> DeleteAsync<TValue>(string uri)
-        => await DoRequest<TValue>(() => httpClient.DeleteAsync(uri));
+        => await ExecuteAsync<TValue>(() => httpClient.DeleteAsync(uri));
     protected async Task<Response<TValue>> DeleteAsync<TValue>(object[]? parameters = null)
         => await DeleteAsync<TValue, object>(parameters);
     protected async Task<Response<TValue>> DeleteAsync<TValue, TQuery>(object[]? parameters = null, TQuery? query = null) where TQuery : class
@@ -160,11 +163,31 @@ public class BaseService
     #endregion
 
     #region Methods (Private)
-    private void InitAuthHeader()
+    private void UpdateAuthHeader()
     {
-        string scheme = "bearer";
+        if (string.IsNullOrWhiteSpace(Token))
+        {
+            httpClient.DefaultRequestHeaders.Authorization = null;
+            return;
+        }
+
+        const string scheme = "bearer";
         AuthenticationHeaderValue authHeader = new(scheme, Token);
         httpClient.DefaultRequestHeaders.Authorization = authHeader;
+    }
+
+    private Task<Response> ExecuteAsync(Func<Task<HttpResponseMessage>> request)
+    {
+        UpdateAuthHeader();
+
+        return DoRequest(request);
+    }
+
+    private Task<Response<TValue>> ExecuteAsync<TValue>(Func<Task<HttpResponseMessage>> request)
+    {
+        UpdateAuthHeader();
+
+        return DoRequest<TValue>(request);
     }
 
     private static async Task<Response<TValue>> DoRequest<TValue>(Func<Task<HttpResponseMessage>> request)

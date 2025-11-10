@@ -1,0 +1,43 @@
+@page "/login"
+
+@inject IAuthService AuthService
+@inject NavigationManager Navigation
+
+<PageTitle>Login</PageTitle>
+
+<BaseForm TRequest="LoginRequest"
+          TResponse="Response<string>"
+          Title="Login"
+          NavTitle="Register"
+          ButtonNavigateTo="/register"
+          SubmitNavigateTo="/products"
+          Request="@RequestModel"
+          Response="@ResponseModel">
+    <Content Context="request">
+        <Entry @bind-Value="request.Email"
+               Label="Email"
+               Type="email"
+               AutoComplete="email" />
+        <Entry @bind-Value="request.Password"
+               Label="Password"
+               Type="password"
+               AutoComplete="current-password" />
+    </Content>
+</BaseForm>
+
+@code {
+    private readonly LoginRequest RequestModel = new();
+    private readonly Response<string> ResponseModel = new();
+
+    protected override void OnInitialized()
+    {
+        if (DataManager.IsLoggedIn)
+        {
+            Navigation.NavigateTo("/products", true);
+            return;
+        }
+
+        ResponseModel.Update = StateHasChanged;
+        ResponseModel.Request = () => AuthService.PostLoginAsync(RequestModel);
+    }
+}

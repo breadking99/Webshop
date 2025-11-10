@@ -30,7 +30,7 @@ public partial class BaseForm<TRequest, TResponse>
         {
             await Response.DoRequestAsync();
 
-            if (!string.IsNullOrEmpty(SubmitNavigateTo))
+            if (!string.IsNullOrEmpty(SubmitNavigateTo) && Response.IsSuccess)
             {
                 Navigation.NavigateTo(SubmitNavigateTo);
             }
