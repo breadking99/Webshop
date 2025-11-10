@@ -22,6 +22,8 @@ public class Response : IResponse
     public bool IsSuccess => StatusCode.IsSuccessStatusCode();
     public bool IsLoading => Status == EResponseStatus.Loading;
     public Func<Task<Response>>? Request { get; set; }
+    // Callback to notify UI state changes
+    public Action? Update { get; set; }
     public EResponseStatus Status
     {
         get => StatusCode.FromStatusCode();
@@ -34,11 +36,11 @@ public class Response : IResponse
     {
         if (Request == null) return;
         Status = EResponseStatus.Loading;
-        //Update?.Invoke();
+        Update?.Invoke();
         Response response = await Request();
         StatusCode = response.StatusCode;
         Message = response.Message;
-        //Update?.Invoke();
+        Update?.Invoke();
     }
     #endregion
 }
@@ -77,12 +79,12 @@ public class Response<TValue> : Response, IResponse<TValue>
     {
         if (request == null) return;
         Status = EResponseStatus.Loading;
-        //Update?.Invoke();
+        Update?.Invoke();
         Response<TValue> response = await request();
         StatusCode = response.StatusCode;
         Message = response.Message;
         Value = response.Value;
-        //Update?.Invoke();
+        Update?.Invoke();
     }
 
     private void SetRequest(Func<Task<Response<TValue>>>? value)

@@ -6,5 +6,5 @@ namespace Web.Blazor.Components;
 public partial class ProductElement
 {
     [Parameter] public Product Product { get; set; } = null!;
-    private string NavigateTo => $"/product/{Product.Id}";
+    private string NavigateTo => $"/products/{Product.Id}";
 }

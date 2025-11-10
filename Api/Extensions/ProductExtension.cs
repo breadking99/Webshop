@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shared.Models;
+using Shared.Queries;
 
 namespace Api.Extensions;
 
 public static class ProductExtension
 {
-    public static IQueryable<Product> IncludeOrderCounts(this IQueryable<Product> queryable) => queryable
-        .Include(p => p.OrderProducts)!
+    public static IQueryable<Product> SelectOrderCounts(this IQueryable<Product> queryable) => queryable
         .Select(o => new Product
         {
             Id = o.Id,
@@ -17,4 +17,26 @@ public static class ProductExtension
                 Count = op.Count
             }).ToList()
         });
+
+    public static IQueryable<Product> FilterProduct(this IQueryable<Product> queryable, ProductFilter? filter)
+    {
+        if (filter == null) return queryable;
+
+        if (!string.IsNullOrWhiteSpace(filter.NameContains))
+        {
+            queryable = queryable.Where(p => p.Name.Contains(filter.NameContains));
+        }
+
+        if (filter.OnlyAvailable)
+        {
+            queryable = queryable.Where(p => p.Store - (p.OrderProducts!.Sum(op => (int?)op.Count) ?? 0) > 0);
+        }
+
+        if (filter.Number > 0 && filter.Size > 0)
+        {
+            queryable = queryable.ApplyPaging(filter);
+        }
+
+        return queryable;
+    }
 }

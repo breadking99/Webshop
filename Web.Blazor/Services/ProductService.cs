@@ -11,8 +11,8 @@ public class ProductService(HttpClient httpClient) : BaseService(httpClient), IP
     protected override StringBuilder GetServiceAddress(params object[] parameters)
         => base.GetServiceAddress("products");
 
-    public Task<Response<List<Product>>> GetProductsAsync(PagerQuery? pager)
-        => GetAsync<List<Product>, PagerQuery>(query: pager);
+    public Task<Response<List<Product>>> GetProductsAsync(ProductFilter? pager)
+        => GetAsync<List<Product>, ProductFilter>(query: pager);
 
     public Task<Response<Product>> GetProductByIdAsync(int id)
         => GetAsync<Product>([id]);

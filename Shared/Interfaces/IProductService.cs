@@ -8,7 +8,7 @@ namespace Shared.Interfaces;
 public interface IProductService
 {
      //!
-     Task<Response<List<Product>>> GetProductsAsync(PagerQuery? pager);
+     Task<Response<List<Product>>> GetProductsAsync(ProductFilter? pager);
      //! {id}
      Task<Response<Product>> GetProductByIdAsync(int id);
 }

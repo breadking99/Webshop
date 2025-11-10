@@ -1,53 +1,99 @@
 @page "/products"
 @using ProductModel = Shared.Models.Product
+@using Shared.Queries
+@using Shared.Responses
 
 @inject IProductService ProductService
 @inject NavigationManager Navigation
 
 <PageTitle>Products</PageTitle>
 
-<ResponseMessage Response="@ResponseModel" />
+<BaseForm TRequest="ProductFilter" TResponse="Response<List<ProductModel>>"
+ Title="Search"
+ SubmitTitle="Apply"
+ LoadingTitle="Loading..."
+ Request="@Filter"
+ Response="@ResponseModel"
+ Content="@SearchContent" />
 
 @if (ResponseModel.IsLoading)
 {
-    <p>Loading products...</p>
+ <p>Loading products...</p>
 }
-else if (ProductList?.Count > 0)
+else if (ProductList?.Count >0)
 {
-    <div class="product-grid">
-        @foreach (var product in ProductList)
-        {
-            <ProductElement Product="@product" />
-        }
-    </div>
+ <div class="product-grid">
+ @foreach (var product in ProductList)
+ {
+ <ProductElement Product="@product" />
+ }
+ </div>
 }
 else if (ResponseModel.IsSuccess)
 {
-    <p>No products available.</p>
+ <p>No products available.</p>
 }
 
+<div class="pager-bar">
+ <button type="button" @onclick="PrevPage" disabled="@(!CanPrev || ResponseModel.IsLoading)">Prev</button>
+ <span>Page @Filter.Number</span>
+ <button type="button" @onclick="NextPage" disabled="@(ProductList is null || ProductList.Count < Filter.Size || ResponseModel.IsLoading)">Next</button>
+</div>
+
 @code {
-    private readonly Response<List<ProductModel>> ResponseModel = new();
-    private IReadOnlyList<ProductModel>? ProductList => ResponseModel.Value;
+ private ProductFilter Filter { get; set; } = new() { Number =1, Size =12 };
+ private readonly Response<List<ProductModel>> ResponseModel = new();
+ private IReadOnlyList<ProductModel>? ProductList => ResponseModel.Value;
+ private bool CanPrev => Filter.Number >1;
 
-    protected override void OnInitialized()
-    {
-        if (!DataManager.IsLoggedIn)
-        {
-            Navigation.NavigateTo("/login", true);
-            return;
-        }
+ // Content inside the form: search + pager fields
+ private RenderFragment<ProductFilter> SearchContent => (filter) => @<div class="filter-container">
+ <div class="filter-fields">
+ <input class="search-input" placeholder="Search name..." @bind="filter.NameContains" @bind:event="oninput" />
+ <label class="avail-checkbox">
+ <input type="checkbox" @bind="filter.OnlyAvailable" /> Only available
+ </label>
+ <div class="pager-fields">
+ <label>Page
+ <input type="number" min="1" @bind="filter.Number" />
+ </label>
+ <label>Size
+ <input type="number" min="1" max="100" @bind="filter.Size" />
+ </label>
+ </div>
+ </div>
+ </div>
+				;
 
-        //ResponseModel.Update = StateHasChanged;
-        ResponseModel.Request = () => ProductService.GetProductsAsync(null);
-    }
+	protected override void OnInitialized()
+	{
+		if (!DataManager.IsLoggedIn)
+		{
+			Navigation.NavigateTo("/login", true);
+			ResponseModel.Update += StateHasChanged;
+			return;
+ }
 
-    protected override async Task OnInitializedAsync()
-    {
-        if (!DataManager.IsLoggedIn) return;
-        await ResponseModel.DoRequestAsync();
-    }
+ ResponseModel.Request = () => ProductService.GetProductsAsync(Filter);
+ }
 
-    private void NavigateToProduct(int id)
-        => Navigation.NavigateTo($"/products/{id}");
+ protected override async Task OnInitializedAsync()
+ {
+ if (!DataManager.IsLoggedIn) return;
+ await ResponseModel.DoRequestAsync();
+ }
+
+ private async Task PrevPage()
+ {
+ if (!CanPrev) return;
+ Filter.Number--;
+ await ResponseModel.DoRequestAsync();
+ }
+
+ private async Task NextPage()
+ {
+ if (ProductList is null || ProductList.Count < Filter.Size) return; // likely last page
+ Filter.Number++;
+ await ResponseModel.DoRequestAsync();
+ }
 }

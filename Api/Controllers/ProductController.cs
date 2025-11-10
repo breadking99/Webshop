@@ -19,17 +19,12 @@ public class ProductController(Context context) : ControllerBase
     #region Methods
     [HttpGet]
     public async Task<ActionResult<List<Product>>> GetProductsAsync(
-        [FromQuery] PagerQuery? pager)
+        [FromQuery] ProductFilter? pager)
     {
         IQueryable<Product> queryable = context.Products
-            .IncludeOrderCounts();
-
-        if (pager != null && pager.Number > 0 && pager.Size > 0)
-        {
-            queryable = queryable
-                .Skip((pager.Number - 1) * pager.Size)
-                .Take(pager.Size);
-        }
+            .Include(p => p.OrderProducts)!
+            .FilterProduct(pager)
+            .SelectOrderCounts();
 
         List<Product> products = await queryable.ToListAsync();
 
@@ -41,8 +36,9 @@ public class ProductController(Context context) : ControllerBase
         [FromRoute] int id)
     {
         Product? product = await context.Products
-            .IncludeOrderCounts()
+            .Include(p => p.OrderProducts)!
             .Where(x => x.Id == id)
+            .SelectOrderCounts()
             .FirstOrDefaultAsync();
 
         if (product is null) return NotFound();

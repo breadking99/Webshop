@@ -147,11 +147,9 @@ public class BaseService
         StringBuilder sb;
 
         if (parameters == null || parameters.Length == 0) sb = ServiceAddress;
-        else sb = ServiceAddress
-            .Append('/')
-            .AppendJoin('/', parameters);
+        else sb = ServiceAddress.Append('/').AppendJoin('/', parameters);
 
-        sb.AddQuery(query);
+        sb.Append('?').AddQuery(query);
         string uri = sb.ToString();
 
         return uri;

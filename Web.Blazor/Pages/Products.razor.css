@@ -1,0 +1,24 @@
+.filter-container { display:flex; flex-direction:column; gap:0.75rem; }
+.filter-fields { display:flex; flex-wrap:wrap; gap:0.75rem; align-items:flex-end; }
+.filter-fields input[type=text], .filter-fields input[type=number] { padding:0.45rem0.65rem; border:1px solid #c5c9da; border-radius:6px; }
+.filter-fields input[type=text] { min-width:180px; }
+.search-input { flex:11100%; padding:0.45rem0.65rem; border:1px solid #c5c9da; border-radius:6px; }
+.avail-checkbox { display:flex; align-items:center; gap:0.4rem; font-size:0.85rem; }
+.pager-fields { display:flex; gap:0.5rem; align-items:flex-end; }
+.pager-fields label { display:flex; flex-direction:column; font-size:0.55rem; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; color:#334; }
+.pager-fields input { width:72px; padding:0.35rem0.5rem; border:1px solid #c5c9da; border-radius:6px; }
+.pager-bar { display:flex; gap:1rem; align-items:center; justify-content:center; margin-top:1rem; }
+.pager-bar button { padding:0.45rem0.9rem; }
+.product-grid { display:grid; gap:1rem; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); margin-top:1.25rem; }
+.form-shell { width:100%; }
+.form-card { width:100%; max-width:none; }
+.form-title { margin-bottom:0.5rem; }
+@media (max-width:600px) {
+ .pager-fields { width:100%; }
+ .pager-bar { flex-wrap: wrap; }
+}
+@media (max-width:700px){
+ .pager-fields { width:100%; }
+ .search-input { flex:11100%; }
+ .form-card { padding:1rem; }
+}
