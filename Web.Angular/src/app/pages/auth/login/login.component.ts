@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { finalize, Subject, takeUntil } from 'rxjs';
@@ -31,7 +31,8 @@ export class LoginComponent implements OnDestroy {
     private readonly fb: FormBuilder,
     private readonly authService: AuthService,
     private readonly router: Router,
-    private readonly store: DataStoreService
+    private readonly store: DataStoreService,
+    private readonly cdr: ChangeDetectorRef
   ) {
     this.form = this.fb.nonNullable.group({
       email: ['', [Validators.required, Validators.email]],
@@ -53,17 +54,20 @@ export class LoginComponent implements OnDestroy {
 
   this.response = createLoadingResponse<AuthData>();
     this.isSubmitting = true;
+  this.cdr.markForCheck();
 
     this.authService.login(request).pipe(
       takeUntil(this.destroy$),
       finalize(() => {
         this.isSubmitting = false;
+        this.cdr.markForCheck();
       })
     ).subscribe(response => {
       this.response = response;
       if (isSuccessStatus(response.statusCode) && response.value && hasValidToken(response.value)) {
         this.router.navigate(['/']);
       }
+      this.cdr.markForCheck();
     });
   }
 

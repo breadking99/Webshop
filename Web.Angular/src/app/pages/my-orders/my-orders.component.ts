@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { finalize, Subject, takeUntil } from 'rxjs';
 import { OrderService } from '../../core/services/order.service';
@@ -24,7 +24,8 @@ export class MyOrdersComponent implements OnDestroy {
   constructor(
     private readonly orderService: OrderService,
     private readonly store: DataStoreService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly cdr: ChangeDetectorRef
   ) {
     if (!this.store.token) {
       this.router.navigate(['/login'], { replaceUrl: true });
@@ -49,17 +50,20 @@ export class MyOrdersComponent implements OnDestroy {
   private loadOrders(): void {
     this.isLoading = true;
     this.response = createLoadingResponse<Order[]>();
+  this.cdr.markForCheck();
 
     this.orderService.getMyOrders().pipe(
       takeUntil(this.destroy$),
       finalize(() => {
         this.isLoading = false;
+        this.cdr.markForCheck();
       })
     ).subscribe(response => {
       this.response = response;
       this.orders = isSuccessStatus(response.statusCode) && response.value
         ? response.value
         : [];
+      this.cdr.markForCheck();
     });
   }
 

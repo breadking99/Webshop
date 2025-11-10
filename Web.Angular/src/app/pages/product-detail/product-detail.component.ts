@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize, Subject, takeUntil } from 'rxjs';
 import { ProductService } from '../../core/services/product.service';
@@ -27,7 +27,8 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly productService: ProductService,
     private readonly store: DataStoreService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly cdr: ChangeDetectorRef
   ) {
     if (!this.store.token) {
       this.router.navigate(['/login'], { replaceUrl: true });
@@ -89,11 +90,13 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.response = createLoadingResponse<Product>();
     this.infoMessage = '';
+  this.cdr.markForCheck();
 
     this.productService.getProductById(id).pipe(
       takeUntil(this.destroy$),
       finalize(() => {
         this.isLoading = false;
+        this.cdr.markForCheck();
       })
     ).subscribe(response => {
       this.response = response;
@@ -109,6 +112,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
       }
 
       this.quantity = 1;
+      this.cdr.markForCheck();
     });
   }
 }

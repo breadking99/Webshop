@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { finalize, Subject, takeUntil } from 'rxjs';
@@ -38,7 +38,8 @@ export class ProductsComponent implements OnDestroy {
     private readonly fb: FormBuilder,
     private readonly productService: ProductService,
     private readonly router: Router,
-    private readonly store: DataStoreService
+    private readonly store: DataStoreService,
+    private readonly cdr: ChangeDetectorRef
   ) {
     this.filterForm = this.fb.nonNullable.group({
       nameContains: [''],
@@ -126,17 +127,20 @@ export class ProductsComponent implements OnDestroy {
 
     this.isLoading = true;
     this.response = createLoadingResponse<Product[]>();
+  this.cdr.markForCheck();
 
     this.productService.getProducts(filter).pipe(
       takeUntil(this.destroy$),
       finalize(() => {
         this.isLoading = false;
+        this.cdr.markForCheck();
       })
     ).subscribe(response => {
       this.response = response;
       this.products = isSuccessStatus(response.statusCode) && response.value
         ? response.value
         : [];
+      this.cdr.markForCheck();
     });
   }
 

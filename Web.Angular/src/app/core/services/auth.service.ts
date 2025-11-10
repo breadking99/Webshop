@@ -19,22 +19,30 @@ export class AuthService extends BaseApiService {
   }
 
   login(request: LoginRequest): Observable<Response<AuthData>> {
+    console.log('[AuthService] login request', { email: request.email });
     const call = this.http.post<AuthData>(`${this.baseUrl}/auth/login`, request, {
       observe: 'response'
     });
 
     return this.toResponse(call).pipe(
-      tap(response => this.handleAuth(response))
+      tap(response => {
+        console.log('[AuthService] login response', response);
+        this.handleAuth(response);
+      })
     );
   }
 
   register(request: RegisterRequest): Observable<Response<AuthData>> {
+    console.log('[AuthService] register request', { email: request.email });
     const call = this.http.post<AuthData>(`${this.baseUrl}/auth/register`, request, {
       observe: 'response'
     });
 
     return this.toResponse(call).pipe(
-      tap(response => this.handleAuth(response))
+      tap(response => {
+        console.log('[AuthService] register response', response);
+        this.handleAuth(response);
+      })
     );
   }
 

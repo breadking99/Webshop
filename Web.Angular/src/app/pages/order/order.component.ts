@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { finalize, Subject, takeUntil } from 'rxjs';
 import { OrderService } from '../../core/services/order.service';
@@ -25,7 +25,8 @@ export class OrderComponent implements OnDestroy {
   constructor(
     private readonly orderService: OrderService,
     private readonly store: DataStoreService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly cdr: ChangeDetectorRef
   ) {
     this.order = this.store.currentOrder;
 
@@ -38,6 +39,7 @@ export class OrderComponent implements OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(order => {
         this.order = order;
+        this.cdr.markForCheck();
       });
   }
 
@@ -75,6 +77,7 @@ export class OrderComponent implements OnDestroy {
 
     this.response = createLoadingResponse<unknown>();
     this.isSubmitting = true;
+  this.cdr.markForCheck();
 
     const request = this.store.createOrderRequest();
 
@@ -82,6 +85,7 @@ export class OrderComponent implements OnDestroy {
       takeUntil(this.destroy$),
       finalize(() => {
         this.isSubmitting = false;
+        this.cdr.markForCheck();
       })
     ).subscribe(response => {
       this.response = response;
@@ -94,6 +98,7 @@ export class OrderComponent implements OnDestroy {
         }
         this.store.resetOrder();
       }
+      this.cdr.markForCheck();
     });
   }
 
