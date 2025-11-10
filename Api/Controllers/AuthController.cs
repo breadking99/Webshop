@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Shared.Interfaces;
 using Shared.Models;
 using Shared.Requests;
+using Shared.Responses;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -13,7 +15,7 @@ namespace Api.Controllers;
 [Route("auth")]
 [AllowAnonymous]
 [ApiController]
-public class AuthController(UserManager<User> userManager, IConfiguration configuration) : ControllerBase
+public class AuthController(UserManager<User> userManager, IConfiguration configuration) : ControllerBase, IAuthController
 {
     #region Fields
     private readonly UserManager<User> userManager = userManager;
@@ -22,34 +24,46 @@ public class AuthController(UserManager<User> userManager, IConfiguration config
 
     #region Methods
     [HttpPost("login")]
-    public async Task<ActionResult<string>> PostLoginAsync(
+    public async Task<ActionResult<AuthData>> PostLoginAsync(
         [FromBody] LoginRequest request)
     {
-        string? token = await LoginAsync(request);
+        AuthData response = await LoginAsync(request);
 
-        if (token == null) return Unauthorized("Unsuccessful login attempt.");
-        return Ok(token);
+        if (response.Success)
+        {
+            response.Message = "Sign in successfull";
+
+            return Ok(response);
+        }
+
+        return Unauthorized("Unsuccessful login attempt.");
     }
 
     [HttpPost("register")]
-    public async Task<ActionResult<string>> PostRegisterAsync(
+    public async Task<ActionResult<AuthData>> PostRegisterAsync(
         [FromBody] RegisterRequest request)
     {
         if (request.Password != request.ConfirmPassword)
             return BadRequest("Password and Confirm Password do not match.");
 
-        string? token = await RegisterAsync(request);
+        AuthData response = await RegisterAsync(request);
 
-        if (token == null) return Unauthorized("Unsuccessful registration attempt.");
-        return Ok(token);
+        if (response.Success)
+        {
+            response.Message = "Registration was successfull";
+
+            return Ok(response);
+        }
+
+        return Unauthorized("Unsuccessful registration attempt.");
     }
 
-    private async Task<string?> RegisterAsync(RegisterRequest request)
+    private async Task<AuthData> RegisterAsync(RegisterRequest request)
     {
         // Is email exist:
         User? user = await userManager.FindByEmailAsync(request.Email);
 
-        if (user != null) return null;
+        if (user != null) return new();
 
         // CreateClaims new user:
         user = new()
@@ -63,15 +77,15 @@ public class AuthController(UserManager<User> userManager, IConfiguration config
 
         // Return result:
         if (result == IdentityResult.Success) return await LoginAsync(request);
-        else return null;
+        else return new();
     }
 
-    private async Task<string?> LoginAsync(LoginRequest request)
+    private async Task<AuthData> LoginAsync(LoginRequest request)
     {
         // Validate user credentials:
         User? user = await ValidateUserCredentialsAsync(request);
 
-        if (user == null) return null;
+        if (user == null) return new();
 
         // Get data for creating token:
         List<Claim> claims = await CreateClaims(user);
@@ -82,7 +96,7 @@ public class AuthController(UserManager<User> userManager, IConfiguration config
         // Creating token:
         string token = CreateToken(claims, expires, signingCredentials);
 
-        return token;
+        return new(user.UserName!, token, validTo);
     }
 
     private async Task<User?> ValidateUserCredentialsAsync(LoginRequest request)

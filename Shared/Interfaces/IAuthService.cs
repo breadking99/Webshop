@@ -7,7 +7,7 @@ namespace Shared.Interfaces;
 public interface IAuthService
 {
     //! login
-    Task<Response<string>> PostLoginAsync(LoginRequest request);
+    Task<Response<AuthData>> PostLoginAsync(LoginRequest request);
     //! register
-    Task<Response<string>> PostRegisterAsync(RegisterRequest request);
+    Task<Response<AuthData>> PostRegisterAsync(RegisterRequest request);
 }

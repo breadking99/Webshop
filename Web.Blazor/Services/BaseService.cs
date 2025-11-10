@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Shared.Enums;
+using Shared.Interfaces;
 using Shared.Responses;
 using System.Net.Http.Headers;
 using System.Text;
@@ -22,7 +23,7 @@ public class BaseService
 
     #region Properties
     protected StringBuilder ServiceAddress => GetServiceAddress();
-    protected static string Token => DataManager.T
+    protected static string Token => DataManager.Token;
     #endregion
 
     #region Fields
@@ -254,12 +255,26 @@ public class BaseService
         if (typeof(TValue) == typeof(string))
         {
             string str = await result.Content.ReadAsStringAsync();
-            object? value = str as object;
+            object? o = str as object;
 
-            return new((TValue)value!);
+            return new((TValue)o!);
         }
 
-        return null;
+        string json = await result.Content.ReadAsStringAsync();
+        TValue? value = JsonConvert.DeserializeObject<TValue>(json);
+        if (value == null) return new(EResponseStatus.DeserializeError);
+
+        if (typeof(TValue) == typeof(IMessage))
+        {
+            IMessage? message = value as IMessage;
+
+            return new(value)
+            {
+                Message = message?.Message
+            };
+        }
+
+        return new(value);
     }
     #endregion
 }

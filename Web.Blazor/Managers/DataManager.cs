@@ -1,4 +1,6 @@
+using Newtonsoft.Json.Linq;
 using Shared.Models;
+using Shared.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,20 +9,21 @@ namespace Web.Blazor.Managers;
 
 public static class DataManager
 {
+    private static AuthData authData = new();
     private static string token = string.Empty;
 
     public static event Action? StateChanged;
 
-    public static bool IsLoggedIn => !string.IsNullOrWhiteSpace(Token);
+    public static bool IsLoggedIn => authData.Success;
 
-    public static string Token
+    public static string Token => authData.Token ?? string.Empty;
+
+    public static AuthData AuthData
     {
-        get => token;
+        get => authData;
         set
         {
-            string normalized = value ?? string.Empty;
-            if (token == normalized) return;
-            token = normalized;
+            authData = value ?? new AuthData();
             NotifyStateChanged();
         }
     }
@@ -31,7 +34,7 @@ public static class DataManager
 
     public static void ResetAuth()
     {
-        Token = string.Empty;
+        authData = new AuthData();
         ResetOrder();
     }
 

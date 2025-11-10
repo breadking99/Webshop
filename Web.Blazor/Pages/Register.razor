@@ -6,7 +6,7 @@
 <PageTitle>Register</PageTitle>
 
 <BaseForm TRequest="RegisterRequest"
-          TResponse="Response<string>"
+          TResponse="Response<AuthData>"
           Title="Register"
           NavTitle="Login"
           ButtonNavigateTo="/login"
@@ -31,7 +31,7 @@
 
 @code {
     private readonly RegisterRequest RequestModel = new();
-    private readonly Response<string> ResponseModel = new();
+    private readonly Response<AuthData> ResponseModel = new();
 
     protected override void OnInitialized()
     {
@@ -40,8 +40,6 @@
             Navigation.NavigateTo("/products", true);
             return;
         }
-
-        //ResponseModel.Update = StateHasChanged;
         ResponseModel.Request = () => AuthService.PostRegisterAsync(RequestModel);
     }
 }
