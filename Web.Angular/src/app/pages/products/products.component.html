@@ -1,0 +1,50 @@
+<section class="products-page">
+  <form class="filter" [formGroup]="filterForm" (ngSubmit)="search()" novalidate>
+    <div class="filter-fields">
+      <label class="input-group">
+        <span>Name contains</span>
+        <input type="text" formControlName="nameContains" placeholder="Search products" />
+      </label>
+
+      <label class="checkbox">
+        <input type="checkbox" formControlName="onlyAvailable" />
+        <span>Only available</span>
+      </label>
+
+      <label class="input-group">
+        <span>Page size</span>
+        <select [value]="pageSize" (change)="onPageSizeChange($event)">
+          <option *ngFor="let option of pageSizeOptions" [value]="option">
+            {{ option }}
+          </option>
+        </select>
+      </label>
+    </div>
+
+    <button class="primary" type="submit" [disabled]="isLoading">Apply</button>
+  </form>
+
+  <app-response-message [response]="response"></app-response-message>
+
+  <p *ngIf="isLoading" class="status">Loading products...</p>
+
+  <div class="product-grid" *ngIf="!isLoading && products.length > 0">
+    <article class="product-card" *ngFor="let product of products; trackBy: trackByProductId">
+      <h2>{{ product.name }}</h2>
+      <p>In stock: {{ product.store }}</p>
+      <button class="secondary" type="button" (click)="viewDetails(product)">
+        View details
+      </button>
+    </article>
+  </div>
+
+  <p *ngIf="!isLoading && products.length === 0 && hasSuccessResponse" class="status">
+    No products available.
+  </p>
+
+  <div class="pager">
+    <button type="button" (click)="prevPage()" [disabled]="!canPrev">Previous</button>
+    <span>Page {{ pagerNumber }}</span>
+    <button type="button" (click)="nextPage()" [disabled]="!canNext">Next</button>
+  </div>
+</section>

@@ -1,0 +1,27 @@
+<section class="my-orders">
+  <app-response-message [response]="response"></app-response-message>
+
+  <p *ngIf="isLoading" class="status">Loading your orders...</p>
+
+  <div class="orders-list" *ngIf="!isLoading && orders.length > 0">
+    <article class="order-card" *ngFor="let order of orders; trackBy: trackByOrderId">
+      <header>
+        <h3>Order #{{ order.id }}</h3>
+        <span>{{ countItems(order) }} item(s)</span>
+      </header>
+      <ul>
+        <li *ngFor="let item of order.orderProducts ?? []">
+          <strong>{{ item.product?.name ?? ('Product #' + item.productId) }}</strong>
+          <span>× {{ item.count }}</span>
+        </li>
+        <li *ngIf="!order.orderProducts || order.orderProducts.length === 0">
+          <em>No products found for this order.</em>
+        </li>
+      </ul>
+    </article>
+  </div>
+
+  <p *ngIf="!isLoading && orders.length === 0 && hasSuccessResponse" class="status">
+    You have not placed any orders yet.
+  </p>
+</section>

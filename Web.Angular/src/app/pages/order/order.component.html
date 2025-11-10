@@ -1,0 +1,44 @@
+<section class="order-page">
+  <app-response-message [response]="response"></app-response-message>
+
+  <ng-container *ngIf="hasItems; else emptyState">
+    <table class="order-table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th class="text-end">Quantity</th>
+          <th class="text-end">In Store</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of items">
+          <td>{{ item.product?.name ?? ('Product #' + item.productId) }}</td>
+          <td class="text-end">
+            <input
+              type="number"
+              min="1"
+              [value]="item.count"
+              (change)="updateCount(item.productId, ($event.target as HTMLInputElement).value)"
+            />
+          </td>
+          <td class="text-end">{{ item.product?.store ?? '—' }}</td>
+          <td class="text-end">
+            <button class="link" type="button" (click)="removeProduct(item.productId)">Remove</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="actions">
+      <button class="primary" type="button" (click)="submit()" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Saving...' : 'Place order' }}
+      </button>
+      <button class="secondary" type="button" (click)="clearOrder()">Clear order</button>
+    </div>
+  </ng-container>
+
+  <ng-template #emptyState>
+    <p>Your basket is empty. Visit the <a routerLink="/products">products page</a> to add items.</p>
+  </ng-template>
+</section>

@@ -1,0 +1,29 @@
+<section class="product-detail">
+  <app-response-message [response]="response"></app-response-message>
+
+  <p *ngIf="isLoading" class="status">Loading product...</p>
+
+  <ng-container *ngIf="!isLoading && product as current">
+    <h1>{{ current.name }}</h1>
+    <p>Available: {{ current.store }}</p>
+
+    <label class="quantity">
+      <span>Quantity</span>
+      <input
+        type="number"
+        [value]="quantity"
+        min="1"
+        [max]="maxSelectable"
+        (input)="onQuantityChange(($event.target as HTMLInputElement).value)"
+      />
+    </label>
+
+    <button class="primary" type="button" (click)="addToBasket()" [disabled]="!canAdd">Add to basket</button>
+  </ng-container>
+
+  <p *ngIf="!isLoading && !product && infoMessage" class="status">
+    {{ infoMessage }}
+  </p>
+
+  <p *ngIf="infoMessage && product" class="status">{{ infoMessage }}</p>
+</section>

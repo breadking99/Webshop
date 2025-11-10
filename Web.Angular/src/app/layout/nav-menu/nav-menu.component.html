@@ -1,0 +1,20 @@
+<nav class="header-nav">
+  <a routerLink="/" routerLinkActive="active" class="nav-link" [routerLinkActiveOptions]="{ exact: true }">
+    Home
+  </a>
+
+  <ng-container *ngIf="isLoggedIn$ | async">
+    <a routerLink="/products" routerLinkActive="active" class="nav-link" [routerLinkActiveOptions]="{ exact: false }">
+      Products
+    </a>
+    <a routerLink="/order" routerLinkActive="active" class="nav-link">
+      Current Order
+      <ng-container *ngIf="(basketCount$ | async) as count">
+        <span *ngIf="count > 0"> ({{ count }})</span>
+      </ng-container>
+    </a>
+    <a routerLink="/my-orders" routerLinkActive="active" class="nav-link">
+      My Orders
+    </a>
+  </ng-container>
+</nav>

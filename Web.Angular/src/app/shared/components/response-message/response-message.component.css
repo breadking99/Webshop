@@ -1,0 +1,39 @@
+.message {
+  margin-top: 1rem;
+}
+
+.alert {
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid transparent;
+}
+
+.alert-success {
+  background: rgba(40, 167, 69, 0.15);
+  border-color: rgba(40, 167, 69, 0.25);
+  color: #1c7430;
+}
+
+.alert-danger {
+  background: rgba(220, 53, 69, 0.15);
+  border-color: rgba(220, 53, 69, 0.25);
+  color: #a71d2a;
+}
+
+.alert-warning {
+  background: rgba(255, 193, 7, 0.2);
+  border-color: rgba(255, 193, 7, 0.35);
+  color: #8a6d3b;
+}
+
+.alert-info {
+  background: rgba(23, 162, 184, 0.15);
+  border-color: rgba(23, 162, 184, 0.25);
+  color: #0c5460;
+}
+
+.alert-secondary {
+  background: rgba(108, 117, 125, 0.1);
+  border-color: rgba(108, 117, 125, 0.2);
+  color: #41464b;
+}

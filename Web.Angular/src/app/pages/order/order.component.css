@@ -1,0 +1,82 @@
+.order-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.order-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 12px 32px rgba(26, 44, 104, 0.08);
+}
+
+.order-table th,
+.order-table td {
+  padding: 0.85rem 1rem;
+}
+
+.order-table thead {
+  background: #f1f4ff;
+  text-align: left;
+}
+
+.order-table tbody tr:nth-child(even) {
+  background: rgba(241, 244, 255, 0.5);
+}
+
+.text-end {
+  text-align: right;
+}
+
+.order-table input[type='number'] {
+  width: 80px;
+  border-radius: 0.5rem;
+  border: 1px solid #cbd5ff;
+  padding: 0.4rem 0.5rem;
+  text-align: right;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.primary {
+  background-color: #1a2c68;
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+  padding: 0.6rem 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.secondary {
+  background: transparent;
+  border: 1px solid #1a2c68;
+  border-radius: 999px;
+  padding: 0.5rem 1.25rem;
+  color: #1a2c68;
+  cursor: pointer;
+}
+
+.link {
+  background: none;
+  border: none;
+  color: #d9534f;
+  cursor: pointer;
+  padding: 0;
+}
+
+.link:hover {
+  text-decoration: underline;
+}

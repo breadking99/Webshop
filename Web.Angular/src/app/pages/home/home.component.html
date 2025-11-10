@@ -1,0 +1,12 @@
+<section class="home">
+  <h1>Welcome to Webshop</h1>
+
+  <p *ngIf="!(isLoggedIn$ | async)">
+    Browse our catalog after you <a routerLink="/login">log in</a> or create a
+    <a routerLink="/register">new account</a>.
+  </p>
+
+  <p *ngIf="isLoggedIn$ | async">
+    Head over to the <a routerLink="/products">products page</a> to keep shopping.
+  </p>
+</section>
