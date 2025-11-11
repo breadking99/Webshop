@@ -15,6 +15,10 @@
   + o
 - Api-hoz van Swagger
 
+# Felhasználók
+- admin@gmail.com [Admin] (Password: Admin99!)
+- user@gmail.com (Password: User01!)
+
 # Projectek
 - Shared: Domain osztályok és interfészek
 - Api: controllerek és endpontok (DataBaseContex)
