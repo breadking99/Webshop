@@ -1,0 +1,57 @@
+@page "/order"
+@implements IDisposable
+
+<PageTitle>Current Order</PageTitle>
+
+<ResponseMessage Response="@SubmitResponse" />
+
+@if (!DataManager.HasOrderItems)
+{
+    <p>Your basket is empty. Visit the <NavLink href="/products">products page</NavLink> to add items.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Product</th>
+                <th scope="col" class="text-end">Quantity</th>
+                <th scope="col" class="text-end">In Store</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Items)
+            {
+                <tr>
+                    <td>@(item.Product?.Name ?? $"Product #{item.ProductId}")</td>
+                    <td class="text-end" style="max-width: 120px;">
+                        <input type="number"
+                               min="1"
+                               value="@item.Count"
+                               class="form-control text-end"
+                               @onchange="args => OnCountChanged(item.ProductId, args)" />
+                    </td>
+                    <td class="text-end">@item.Product?.Store</td>
+                    <td class="text-end">
+                        <button class="btn btn-link text-danger"
+                                type="button"
+                                @onclick="() => RemoveProduct(item.ProductId)">Remove</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="d-flex flex-wrap gap-2">
+        <button class="btn btn-success"
+                type="button"
+                disabled="@IsSubmitting"
+                @onclick="SubmitAsync">
+            @(IsSubmitting ? "Saving..." : "Place order")
+        </button>
+        <button class="btn btn-outline-secondary"
+                type="button"
+                @onclick="ClearOrder">Clear order</button>
+    </div>
+}

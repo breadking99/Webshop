@@ -1,8 +1,5 @@
 @page "/register"
 
-@inject IAuthService AuthService
-@inject NavigationManager Navigation
-
 <PageTitle>Register</PageTitle>
 
 <BaseForm TRequest="AuthRequest"
@@ -11,8 +8,8 @@
           NavTitle="Login"
           ButtonNavigateTo="/login"
           SubmitNavigateTo="/"
-          Request="@RequestModel"
-          Response="@ResponseModel">
+          Request="@Request"
+          Response="@Response">
     <Content Context="request">
         <Entry @bind-Value="request.Email"
                Label="Email"
@@ -28,20 +25,3 @@
                AutoComplete="new-password" />
     </Content>
 </BaseForm>
-
-@code {
-    private readonly AuthRequest RequestModel = new();
-    private readonly Response<AuthData> ResponseModel = new();
-
-    protected override void OnInitialized()
-    {
-        ResponseModel.Update = () => _ = InvokeAsync(StateHasChanged);
-
-        if (DataManager.IsLoggedIn)
-        {
-            Navigation.NavigateTo("/", true);
-            return;
-        }
-        ResponseModel.Request = () => AuthService.PostRegisterAsync(RequestModel);
-    }
-}

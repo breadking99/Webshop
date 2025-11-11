@@ -1,15 +1,10 @@
 @page "/my-orders"
-@using OrderModel = Shared.Models.Order
-@using OrderProductModel = Shared.Models.OrderProduct
-
-@inject IOrderService OrderService
-@inject NavigationManager Navigation
 
 <PageTitle>My Orders</PageTitle>
 
-<ResponseMessage Response="@ResponseModel" />
+<ResponseMessage Response="@Response" />
 
-@if (ResponseModel.IsLoading)
+@if (Response.IsLoading)
 {
     <p>Loading your orders...</p>
 }
@@ -43,31 +38,7 @@ else if (Orders?.Count > 0)
         }
     </div>
 }
-else if (ResponseModel.IsSuccess)
+else if (Response.IsSuccess)
 {
     <p>You have not placed any orders yet.</p>
-}
-
-@code {
-    private readonly Response<List<OrderModel>> ResponseModel = new();
-    private IReadOnlyList<OrderModel>? Orders => ResponseModel.Value;
-
-    protected override void OnInitialized()
-    {
-        ResponseModel.Update = () => _ = InvokeAsync(StateHasChanged);
-
-        if (!DataManager.IsLoggedIn)
-        {
-            Navigation.NavigateTo("/login", true);
-            return;
-    }
-
-    ResponseModel.Request = () => OrderService.GetMyOrdersAsync();
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        if (!DataManager.IsLoggedIn) return;
-        await ResponseModel.DoRequestAsync();
-    }
 }

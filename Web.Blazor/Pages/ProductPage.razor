@@ -1,0 +1,42 @@
+@page "/products/{Id:int}"
+
+
+<PageTitle>Product Details</PageTitle>
+
+<ResponseMessage Response="@ResponseModel" />
+
+@if (ResponseModel.IsLoading)
+{
+    <p>Loading product...</p>
+}
+else if (CurrentProduct is null)
+{
+    if (ResponseModel.IsSuccess)
+    {
+        <p>We could not find this product.</p>
+    }
+}
+else
+{
+    <div class="product-detail">
+        <h1>@CurrentProduct.Name</h1>
+        <p>Available: @CurrentProduct.Store</p>
+        <div class="mb-3">
+            <label class="form-label" for="quantity">Quantity</label>
+            <InputNumber id="quantity"
+                         class="form-control"
+                         @bind-Value="quantity"
+                         min="1"
+                         max="@MaxSelectable"
+                         disabled="@(!CanAdd)" />
+        </div>
+        <button class="btn btn-primary"
+                type="button"
+                disabled="@(!CanAdd)"
+                @onclick="AddToBasket">Add to basket</button>
+        @if (!string.IsNullOrWhiteSpace(InfoMessage))
+        {
+            <p class="mt-2">@InfoMessage</p>
+        }
+    </div>
+}

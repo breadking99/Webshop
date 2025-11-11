@@ -1,58 +1,23 @@
-@page "/products/{Id:int}"
-@using ProductModel = Shared.Models.Product
+﻿using Microsoft.AspNetCore.Components;
+using Shared.Interfaces;
+using Shared.Models;
+using Shared.Responses;
+using Web.Blazor.Managers;
 
-@inject IProductService ProductService
-@inject NavigationManager Navigation
+namespace Web.Blazor.Pages;
 
-<PageTitle>Product Details</PageTitle>
-
-<ResponseMessage Response="@ResponseModel" />
-
-@if (ResponseModel.IsLoading)
+public partial class ProductPage
 {
-    <p>Loading product...</p>
-}
-else if (CurrentProduct is null)
-{
-    if (ResponseModel.IsSuccess)
-    {
-        <p>We could not find this product.</p>
-    }
-}
-else
-{
-    <div class="product-detail">
-        <h1>@CurrentProduct.Name</h1>
-        <p>Available: @CurrentProduct.Store</p>
-        <div class="mb-3">
-            <label class="form-label" for="quantity">Quantity</label>
-            <InputNumber id="quantity"
-                         class="form-control"
-                         @bind-Value="quantity"
-                         min="1"
-                         max="@MaxSelectable"
-                         disabled="@(!CanAdd)" />
-        </div>
-        <button class="btn btn-primary"
-                type="button"
-                disabled="@(!CanAdd)"
-                @onclick="AddToBasket">Add to basket</button>
-        @if (!string.IsNullOrWhiteSpace(InfoMessage))
-        {
-            <p class="mt-2">@InfoMessage</p>
-        }
-    </div>
-}
-
-@code {
+    [Inject] IProductService ProductService { get; set; } = null!;
+    [Inject] NavigationManager Navigation { get; set; } = null!;
     [Parameter] public int Id { get; set; }
 
-    private readonly Response<ProductModel> ResponseModel = new();
+    private readonly Response<Product> ResponseModel = new();
     private int currentProductId = -1;
     private bool shouldLoad;
     private int quantity = 1;
     private string InfoMessage { get; set; } = string.Empty;
-    private ProductModel? CurrentProduct => ResponseModel.Value;
+    private Product? CurrentProduct => ResponseModel.Value;
     private int MaxSelectable => CurrentProduct is null ? 1 : Math.Max(1, CurrentProduct.Store);
     private bool CanAdd => CurrentProduct is not null && CurrentProduct.Store > 0;
 

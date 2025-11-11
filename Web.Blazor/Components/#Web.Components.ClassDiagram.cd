@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Web.Blazor.Components.BaseForm&lt;TRequest, TResponse&gt;">
+    <Position X="7" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAKAAAgBAAEAAgAAACAAAAAgAggAgAAAQAAACQAI=</HashCode>
+      <FileName>Components\BaseForm.razor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Web.Blazor.Components.Entry">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAUAAAAgAAAAAAAAAAAEAAAAAAAQAgAAAAAAA=</HashCode>
+      <FileName>Components\Entry.razor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Web.Blazor.Components.NavButton">
+    <Position X="2.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAAAAKAAAACAAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>Components\NavButton.razor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Web.Blazor.Components.ResponseMessage">
+    <Position X="4.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAABAEAAAAAIAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Components\ResponseMessage.razor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Web.Blazor.Components.ProductElement">
+    <Position X="0.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Components\ProductElement.razor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

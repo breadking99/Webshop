@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Web.Blazor.Pages.Login">
+    <Position X="6.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAAAAACAAAgAAACAAAAAAAQAA=</HashCode>
+      <FileName>Pages\Login.razor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Web.Blazor.Pages.MyOrders">
+    <Position X="8.75" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAACCAAAIAAAQAA=</HashCode>
+      <FileName>Pages\MyOrders.razor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Web.Blazor.Pages.OrderPage" BaseTypeListCollapsed="true">
+    <Position X="11" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAABGAACQAACgAIAAAAAAAAAAACCgAAAQAAQAA=</HashCode>
+      <FileName>Pages\OrderPage.razor.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Web.Blazor.Pages.ProductPage">
+    <Position X="0.5" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAiAIAAAAAAAAIEAIAAQIAAAAQAAACCAgAAIAAAQAA=</HashCode>
+      <FileName>Pages\ProductPage.razor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Web.Blazor.Pages.ProductsPage">
+    <Position X="2.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAABAAAAAAAAAQAAAABEAAAACCAAAgAAARAA=</HashCode>
+      <FileName>Pages\ProductsPage.razor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Web.Blazor.Pages.Register">
+    <Position X="4.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAAAAACAAAgAAACAAAAAAAQAA=</HashCode>
+      <FileName>Pages\Register.razor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

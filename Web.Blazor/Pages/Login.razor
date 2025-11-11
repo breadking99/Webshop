@@ -1,8 +1,5 @@
 @page "/login"
 
-@inject IAuthService AuthService
-@inject NavigationManager Navigation
-
 <PageTitle>Login</PageTitle>
 
 <BaseForm TRequest="AuthRequest"
@@ -24,21 +21,3 @@
                AutoComplete="current-password" />
     </Content>
 </BaseForm>
-
-@code {
-    private readonly AuthRequest Request = new();
-    private readonly Response<AuthData> Response = new();
-
-    protected override void OnInitialized()
-    {
-        Response.Update = () => _ = InvokeAsync(StateHasChanged);
-
-        if (DataManager.IsLoggedIn)
-        {
-            Navigation.NavigateTo("/", true);
-            return;
-        }
-
-        Response.Request = () => AuthService.PostLoginAsync(Request);
-    }
-}
